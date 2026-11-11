@@ -313,7 +313,7 @@ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'
     $('#boardCount').textContent = posts.length + '개';
 }
 
-function toggleLike(postId) {
+window.toggleLike = function (postId) {
     const post = posts.find(function (item) {
         return String(item.id) === String(postId);
     });
@@ -333,7 +333,7 @@ function toggleLike(postId) {
 
     set('commu_demo_posts', posts);
     render();
-}
+};
 $('#postForm').onsubmit=e=>{e.preventDefault();posts.push({id:Date.now().toString(),title:$('#title').value.trim(),body:$('#body').value.trim(),nickname:profile.nickname,time:Date.now(),likes:0,likedBy:[]});set('commu_demo_posts',posts);e.target.reset();render()};$('#posts').addEventListener('click', function (event) {
     const deleteButton = event.target.closest('button[data-del]');
     if (deleteButton && confirm('게시글을 삭제할까요?')) {
