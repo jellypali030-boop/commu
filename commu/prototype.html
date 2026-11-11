@@ -19,7 +19,8 @@ main{max-width:1000px;margin:26px auto;padding:0 16px 50px}.view{display:none}.v
 const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
 const get=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 let profile=get('commu_demo_profile',{nickname:'새로운 회원'}),posts=get('commu_demo_posts',[]),messages=get('commu_demo_messages',[]);
-let visitorId=localStorage.getItem('commu_demo_visitor_id');if(!visitorId){visitorId='visitor_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2);localStorage.setItem('commu_demo_visitor_id',visitorId)}\nposts.forEach(p=>{if(!Array.isArray(p.likedBy))p.likedBy=[];if(typeof p.likes!=='number')p.likes=0});
+let visitorId=localStorage.getItem('commu_demo_visitor_id');if(!visitorId){visitorId='visitor_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2);localStorage.setItem('commu_demo_visitor_id',visitorId)}
+posts.forEach(p=>{if(!Array.isArray(p.likedBy))p.likedBy=[];if(typeof p.likes!=='number')p.likes=0});
 function safe(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function go(id){$$('.view').forEach(x=>x.classList.toggle('active',x.id===id));$$('#nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===id));if(id==='board')renderPosts();if(id==='chat')renderChat();if(id==='home')renderHome();if(id==='mypage')$('#nickname').value=profile.nickname}
 $$('#nav button').forEach(b=>b.onclick=()=>go(b.dataset.view));$$('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
