@@ -399,7 +399,7 @@ function renderPosts() {
     $('#boardCount').textContent = posts.length + '개';
 }
 
-function toggleLike(postId) {
+window.toggleLike = function (postId) {
     const post = posts.find(function (item) {
         return String(item.id) === String(postId);
     });
@@ -419,7 +419,7 @@ function toggleLike(postId) {
 
     set('commu_demo_posts', posts);
     renderPosts();
-}
+};
 function renderHome(){$('#recent').innerHTML=posts.slice(-3).reverse().map(p=>'<article class="post"><b>'+safe(p.title)+'</b><p class="muted">'+safe(p.body.slice(0,80))+'</p></article>').join('')||'<div class="empty">첫 게시글을 기다리고 있어요.</div>';$('#count').textContent=posts.length}
 $('#postForm').onsubmit=e=>{e.preventDefault();posts.push({id:Date.now().toString(),title:$('#title').value.trim(),body:$('#body').value.trim(),time:Date.now(),likes:0,likedBy:[]});set('commu_demo_posts',posts);e.target.reset();renderPosts();renderHome()};
 $('#posts').addEventListener('click', function (event) {
