@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COMMU</title>
+<style>
+:root{
+  --bg:#f7f4ff; --card:#ffffff; --ink:#26223a; --sub:#6e6a85;
+  --main:#7c5cff; --main2:#ff7eb6; --line:#e6e1f7;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+header{background:linear-gradient(135deg,var(--main),var(--main2));color:#fff;padding:28px 16px 0;text-align:center}
+.logo{display:inline-flex;align-items:center;gap:10px;font-size:28px;font-weight:800;letter-spacing:2px}
+header p{opacity:.9;font-size:14px;margin-top:4px}
+nav{display:flex;justify-content:center;gap:4px;margin-top:20px;flex-wrap:wrap}
+nav button{background:transparent;border:0;color:#fff;opacity:.75;padding:10px 16px;font-size:15px;font-weight:600;cursor:pointer;border-radius:12px 12px 0 0}
+nav button.on{background:var(--bg);color:var(--main);opacity:1}
+main{max-width:720px;margin:0 auto;padding:20px 16px 60px}
+section{display:none}
+section.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+h2{font-size:20px;margin-bottom:10px}
+h3{font-size:16px;margin-bottom:6px}
+.sub{color:var(--sub);font-size:14px}
+ul.rules{padding-left:20px}
+ul.rules li{margin:4px 0}
+textarea,input{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;font:inherit;background:#fff;color:var(--ink)}
+textarea{resize:vertical;min-height:84px}
+.row{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:10px;flex-wrap:wrap}
+.btn{background:var(--main);color:#fff;border:0;border-radius:12px;padding:10px 18px;font-weight:700;cursor:pointer;font-size:14px}
+.btn.ghost{background:#efeaff;color:var(--main)}
+.btn.small{padding:6px 12px;font-size:12px}
+.post .meta{display:flex;justify-content:space-between;font-size:13px;color:var(--sub);margin-bottom:6px}
+.post .nick{font-weight:700;color:var(--main)}
+.post .text{white-space:pre-wrap;word-break:break-word}
+.actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.comments{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}
+.cm{font-size:14px;margin:6px 0;word-break:break-word}
+.cm b{color:var(--main2)}
+.cform{display:flex;gap:6px;margin-top:8px}
+.empty{text-align:center;color:var(--sub);padding:30px 0}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.logobox{text-align:center}
+.logobox svg{width:100%;max-width:150px;height:auto}
+.palette{display:flex;gap:6px;margin-top:8px}
+.palette span{flex:1;height:28px;border-radius:8px}
+.tag{display:inline-block;background:#efeaff;color:var(--main);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700;margin-bottom:6px}
+footer{text-align:center;font-size:12px;color:var(--sub);padding:0 16px 30px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg width="40" height="40" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M32 6c14 0 26 9 26 24 0 12-8 22-26 28C14 52 6 42 6 30 6 15 18 6 32 6z" fill="#fff"/>
+      <circle cx="23" cy="30" r="3.5" fill="#7c5cff"/><circle cx="41" cy="30" r="3.5" fill="#7c5cff"/>
+      <path d="M24 40q8 7 16 0" stroke="#ff7eb6" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </svg>
+    COMMU
+  </div>
+  <p>이름 없이, 편하게 이야기하는 곳</p>
+  <nav>
+    <button data-t="intro" class="on">소개</button>
+    <button data-t="board">익명 게시판</button>
+    <button data-t="story">스토리</button>
+    <button data-t="design">디자인</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- 소개 -->
+<section id="intro" class="on">
+  <div class="card">
+    <h2>COMMU에 온 걸 환영해요 👋</h2>
+    <p>COMMU는 닉네임도 가입도 필요 없는 작은 익명 커뮤니티예요. 오늘 있었던 일, 고민, 웃긴 이야기까지 편하게 남겨 보세요. (이 문구는 직접 고쳐서 쓰세요)</p>
+  </div>
+  <div class="card">
+    <h3>이런 곳이에요</h3>
+    <ul class="rules">
+      <li>들어오면 랜덤 닉네임이 자동으로 생겨요.</li>
+      <li>글과 댓글로 가볍게 대화해요.</li>
+      <li>내가 쓴 글은 언제든 지울 수 있어요.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>커뮤니티 규칙</h3>
+    <ul class="rules">
+      <li>서로 존중해요. 욕설과 비방은 금지예요.</li>
+      <li>개인정보(실명, 연락처, 주소)는 올리지 않아요.</li>
+      <li>불편한 글은 '신고'를 눌러 주세요.</li>
+    </ul>
+  </div>
+  <button class="btn" onclick="go('board')">게시판 가기</button>
+</section>
+
+<!-- 게시판 -->
+<section id="board">
+  <div class="card">
+    <div class="sub">내 닉네임: <b id="mynick"></b> <button class="btn ghost small" id="renick">바꾸기</button></div>
+    <textarea id="ptext" maxlength="500" placeholder="무슨 생각을 하고 있나요?"></textarea>
+    <div class="row">
+      <span class="sub"><span id="cnt">0</span>/500</span>
+      <button class="btn" id="psend">올리기</button>
+    </div>
+  </div>
+  <div id="plist"></div>
+</section>
+
+<!-- 스토리 -->
+<section id="story">
+  <div class="card">
+    <h2>커뮤니티 스토리 아이디어</h2>
+    <p class="sub">세계관이 있으면 커뮤니티가 더 기억에 남아요. 마음에 드는 걸 골라 발전시켜 보세요.</p>
+  </div>
+  <div class="card">
+    <span class="tag">아이디어 1</span>
+    <h3>이름 없는 방</h3>
+    <p>밤마다 문이 열리는 방. 들어온 사람은 이름을 문 앞에 두고 들어가야 하고, 나갈 때 다시 가져간다. 방 안에서는 누구나 평등한 '손님'이라는 설정.</p>
+  </div>
+  <div class="card">
+    <span class="tag">아이디어 2</span>
+    <h3>젤리 마을</h3>
+    <p>말랑한 젤리 주민들이 사는 마을. 글을 쓸 때 기분에 따라 젤리 색이 정해진다(기쁨=핑크, 우울=파랑, 화남=빨강). 마을 이장 젤리가 매주 소식을 전한다.</p>
+  </div>
+  <div class="card">
+    <span class="tag">아이디어 3</span>
+    <h3>밤 11시의 라디오</h3>
+    <p>가상의 심야 라디오 방송국이 콘셉트. 게시글은 청취자 사연, 댓글은 문자 참여. 매주 '오늘의 사연'을 뽑아 주제를 정한다.</p>
+  </div>
+  <div class="card">
+    <span class="tag">아이디어 4</span>
+    <h3>편지 우체통</h3>
+    <p>누군가 써서 넣은 편지를 다른 익명의 누군가가 받아 답장하는 구조. 답장이 달려야만 편지가 공개되는 점이 포인트.</p>
+  </div>
+</section>
+
+<!-- 디자인 -->
+<section id="design">
+  <div class="card">
+    <h2>로고 · 표지 디자인 아이디어</h2>
+    <p class="sub">아래 시안을 보고 방향을 골라 주세요. 선택하면 다듬어 드릴게요.</p>
+  </div>
+  <div class="grid">
+    <div class="card logobox">
+      <svg viewBox="0 0 64 64"><path d="M32 6c14 0 26 9 26 24 0 12-8 22-26 28C14 52 6 42 6 30 6 15 18 6 32 6z" fill="#7c5cff"/><circle cx="23" cy="30" r="3.5" fill="#fff"/><circle cx="41" cy="30" r="3.5" fill="#fff"/><path d="M24 40q8 7 16 0" stroke="#ff7eb6" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+      <h3>A. 젤리 얼굴</h3>
+      <p class="sub">말랑하고 친근한 마스코트형</p>
+      <div class="palette"><span style="background:#7c5cff"></span><span style="background:#ff7eb6"></span><span style="background:#f7f4ff;border:1px solid #e6e1f7"></span></div>
+    </div>
+    <div class="card logobox">
+      <svg viewBox="0 0 64 64"><path d="M10 12h44a4 4 0 014 4v26a4 4 0 01-4 4H30l-12 10V46h-8a4 4 0 01-4-4V16a4 4 0 014-4z" fill="#ff7eb6"/><circle cx="22" cy="29" r="9" fill="#fff" opacity=".9"/><circle cx="42" cy="29" r="9" fill="#7c5cff" opacity=".85"/></svg>
+      <h3>B. 겹치는 말풍선</h3>
+      <p class="sub">대화와 연결을 상징</p>
+      <div class="palette"><span style="background:#ff7eb6"></span><span style="background:#7c5cff"></span><span style="background:#fff;border:1px solid #e6e1f7"></span></div>
+    </div>
+    <div class="card logobox">
+      <svg viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#26223a"/><text x="32" y="42" text-anchor="middle" font-size="30" font-weight="800" fill="#fff" font-family="sans-serif">C</text><circle cx="46" cy="22" r="5" fill="#ff7eb6"/></svg>
+      <h3>C. 이니셜 + 점</h3>
+      <p class="sub">미니멀한 앱 아이콘형</p>
+      <div class="palette"><span style="background:#26223a"></span><span style="background:#ff7eb6"></span><span style="background:#fff;border:1px solid #e6e1f7"></span></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h3>표지(커버) 아이디어</h3>
+    <ul class="rules">
+      <li><b>밤하늘형</b>: 짙은 남색 배경에 작은 창문 불빛들. 각 창문이 익명의 한 사람.</li>
+      <li><b>젤리 콜라주형</b>: 여러 색 젤리 얼굴이 모여 있는 파스텔 그림.</li>
+      <li><b>타이포형</b>: 큰 'COMMU' 글자 하나와 여백, 글자 속에 작은 말풍선.</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  이 게시판의 글은 지금 쓰는 기기의 브라우저에만 저장돼요. 모두가 같은 글을 보려면 서버(예: Firebase)를 연결해야 해요.
+</footer>
+
+<script>
+(function(){
+  // 탭
+  function go(t){
+    document.querySelectorAll('section').forEach(function(s){s.classList.toggle('on',s.id===t)});
+    document.querySelectorAll('nav button').forEach(function(b){b.classList.toggle('on',b.dataset.t===t)});
+    window.scrollTo(0,0);
+  }
+  window.go=go;
+  document.querySelectorAll('nav button').forEach(function(b){b.onclick=function(){go(b.dataset.t)}});
+
+  // 저장소
+  var KEY='commu_posts_v1', NK='commu_nick_v1';
+  function load(){try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return []}}
+  function save(p){try{localStorage.setItem(KEY,JSON.stringify(p))}catch(e){}}
+  var animals=['달팽이','고래','젤리','구름','토끼','수달','고양이','펭귄','별','곰돌이','여우','햄스터'];
+  function newNick(){return '익명의 '+animals[Math.floor(Math.random()*animals.length)]+' #'+Math.floor(1000+Math.random()*9000)}
+  var nick;
+  try{nick=localStorage.getItem(NK)}catch(e){}
+  if(!nick){nick=newNick();try{localStorage.setItem(NK,nick)}catch(e){}}
+  var nickEl=document.getElementById('mynick');
+  nickEl.textContent=nick;
+  document.getElementById('renick').onclick=function(){
+    nick=newNick();try{localStorage.setItem(NK,nick)}catch(e){}
+    nickEl.textContent=nick;
+  };
+
+  function ago(t){
+    var s=Math.floor((Date.now()-t)/1000);
+    if(s<60)return '방금 전';
+    if(s<3600)return Math.floor(s/60)+'분 전';
+    if(s<86400)return Math.floor(s/3600)+'시간 전';
+    return Math.floor(s/86400)+'일 전';
+  }
+  function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e}
+
+  var posts=load();
+  var list=document.getElementById('plist');
+
+  function render(){
+    list.innerHTML='';
+    if(!posts.length){list.appendChild(el('div','empty','아직 글이 없어요. 첫 글을 남겨 보세요!'));return}
+    posts.forEach(function(p){
+      var card=el('div','card post');
+      var meta=el('div','meta');
+      meta.appendChild(el('span','nick',p.nick));
+      meta.appendChild(el('span','',ago(p.time)));
+      card.appendChild(meta);
+      card.appendChild(el('div','text',p.text));
+
+      var act=el('div','actions');
+      var like=el('button','btn ghost small','♥ '+(p.likes||0));
+      like.onclick=function(){p.likes=(p.likes||0)+1;save(posts);render()};
+      act.appendChild(like);
+      var rep=el('button','btn ghost small','신고');
+      rep.onclick=function(){alert('신고가 접수됐다고 가정할게요. (서버 연결 시 실제로 전달돼요)')};
+      act.appendChild(rep);
+      if(p.mine){
+        var del=el('button','btn ghost small','삭제');
+        del.onclick=function(){
+          if(confirm('이 글을 지울까요?')){posts=posts.filter(function(x){return x.id!==p.id});save(posts);render()}
+        };
+        act.appendChild(del);
+      }
+      card.appendChild(act);
+
+      var cbox=el('div','comments');
+      (p.comments||[]).forEach(function(c){
+        var d=el('div','cm');
+        d.appendChild(el('b','',c.nick+' '));
+        d.appendChild(document.createTextNode(c.text));
+        cbox.appendChild(d);
+      });
+      var f=el('div','cform');
+      var inp=document.createElement('input');
+      inp.placeholder='댓글 달기';inp.maxLength=200;
+      var b=el('button','btn small','등록');
+      function add(){
+        var v=inp.value.trim();if(!v)return;
+        p.comments=p.comments||[];
+        p.comments.push({nick:nick,text:v,time:Date.now()});
+        save(posts);render();
+      }
+      b.onclick=add;
+      inp.onkeydown=function(e){if(e.key==='Enter')add()};
+      f.appendChild(inp);f.appendChild(b);
+      cbox.appendChild(f);
+      card.appendChild(cbox);
+      list.appendChild(card);
+    });
+  }
+
+  var ta=document.getElementById('ptext');
+  ta.oninput=function(){document.getElementById('cnt').textContent=ta.value.length};
+  document.getElementById('psend').onclick=function(){
+    var v=ta.value.trim();if(!v)return;
+    posts.unshift({id:Date.now()+''+Math.floor(Math.random()*1000),nick:nick,text:v,time:Date.now(),likes:0,comments:[],mine:true});
+    save(posts);ta.value='';document.getElementById('cnt').textContent='0';render();
+  };
+
+  render();
+})();
+</script>
+</body>
+</html>
