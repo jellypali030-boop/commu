@@ -303,8 +303,8 @@ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'
                 '<div class="row"><b>' + safe(post.title) + '</b><span class="meta">' + new Date(post.time).toLocaleString('ko-KR') + '</span></div>' +
                 '<div class="meta">' + safe(post.nickname || profile.nickname) + '</div>' +
                 '<p>' + safe(post.body) + '</p>' +
-                '<button type="button" class="btn alt" onclick="toggleLike(\'' + post.id + '\')">' +
-                    (liked ? '공감 취소' : '공감하기') + ' · ' + post.likes +
+                '<button type="button" class="btn heart-btn' + (liked ? ' liked' : '') + '" aria-label="' + (liked ? '공감 취소' : '공감하기') + '" onclick="toggleLike(\\'' + post.id + '\\')">' +
+                    '<span aria-hidden="true">' + (liked ? '♥' : '♡') + '</span> ' + post.likes +
                 '</button> ' +
                 '<button type="button" class="btn alt" data-del="' + post.id + '">삭제</button>' +
             '</article>';
