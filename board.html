@@ -295,46 +295,51 @@ visitorId='visitor_'+Date.now().toString(36);
     localStorage.setItem('commu_demo_visitor_id',visitorId)
 }
 function safe(s) {
-return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))};let posts=get('commu_demo_posts',[]);posts.forEach(p=>{if(!Array.isArray(p.likedBy))p.likedBy=[];if(typeof p.likes!=='number')p.likes=0});function render(){ $('#posts').innerHTML=posts.length?posts.slice().reverse().map(p=>{let liked=p.likedBy.includes(visitorId);return '<article class="post"><div class="row"><b>'+safe(p.title)+'</b><span class="meta">'+new Date(p.time).toLocaleString('ko-KR')+'</span></div><div class="meta">'+safe(p.nickname||profile.nickname)+'</div><p>'+safe(p.body)+'</p><button class="btn alt heart-btn '+(liked?'liked':'')+'" data-like="'+p.id+'" aria-label="'+(liked?'공감 취소':'공감하기')+'" aria-pressed="'+(liked?'true':'false')+'">'+(liked?'♥':'♡')+' <span>'+p.likes+'</span></button> <button class="btn alt" data-del="'+p.id+'">삭제</button></article>'}).join(''):'<div class="empty">아직 게시글이 없어요. 첫 이야기를 남겨보세요.</div>';$('#boardCount').textContent=posts.length+'개'}$('#postForm').onsubmit=e=>{e.preventDefault();posts.push({id:Date.now().toString(),title:$('#title').value.trim(),body:$('#body').value.trim(),nickname:profile.nickname,time:Date.now(),likes:0,likedBy:[]});set('commu_demo_posts',posts);e.target.reset();render()};$('#posts').addEventListener('click', function (event) {
-    const likeButton = event.target.closest('button[data-like]');
-    const deleteButton = event.target.closest('button[data-del]');
+return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))};let posts=get('commu_demo_posts',[]);posts.forEach(p=>{if(!Array.isArray(p.likedBy))p.likedBy=[];if(typeof p.likes!=='number')p.likes=0});function render() {
+    $('#posts').innerHTML = posts.length
+        ? posts.slice().reverse().map(function (post) {
+            const liked = Array.isArray(post.likedBy) && post.likedBy.includes(visitorId);
+            return '<article class="post">' +
+                '<div class="row"><b>' + safe(post.title) + '</b><span class="meta">' + new Date(post.time).toLocaleString('ko-KR') + '</span></div>' +
+                '<div class="meta">' + safe(post.nickname || profile.nickname) + '</div>' +
+                '<p>' + safe(post.body) + '</p>' +
+                '<button type="button" class="btn alt" onclick="toggleLike(\'' + post.id + '\')">' +
+                    (liked ? '공감 취소' : '공감하기') + ' · ' + post.likes +
+                '</button> ' +
+                '<button type="button" class="btn alt" data-del="' + post.id + '">삭제</button>' +
+            '</article>';
+        }).join('')
+        : '<div class="empty">아직 게시글이 없어요. 첫 이야기를 남겨보세요.</div>';
+    $('#boardCount').textContent = posts.length + '개';
+}
 
-    if (likeButton) {
-        event.preventDefault();
+function toggleLike(postId) {
+    const post = posts.find(function (item) {
+        return String(item.id) === String(postId);
+    });
+    if (!post) return;
 
-        const post = posts.find(function (item) {
-            return String(item.id) === likeButton.dataset.like;
-        });
+    if (!Array.isArray(post.likedBy)) post.likedBy = [];
+    post.likes = Number(post.likes) || 0;
 
-        if (!post) return;
-
-        if (!Array.isArray(post.likedBy)) {
-            post.likedBy = [];
-        }
-
-        const alreadyLiked = post.likedBy.includes(visitorId);
-
-        if (alreadyLiked) {
-            post.likedBy = post.likedBy.filter(function (id) {
-                return id !== visitorId;
-            });
-
-            post.likes = Math.max(0, post.likes - 1);
-        } else {
-            post.likedBy.push(visitorId);
-            post.likes += 1;
-        }
-
-        set('commu_demo_posts', posts);
-        render();
-        return;
+    const likedIndex = post.likedBy.indexOf(visitorId);
+    if (likedIndex >= 0) {
+        post.likedBy.splice(likedIndex, 1);
+        post.likes = Math.max(0, post.likes - 1);
+    } else {
+        post.likedBy.push(visitorId);
+        post.likes += 1;
     }
 
+    set('commu_demo_posts', posts);
+    render();
+}
+$('#postForm').onsubmit=e=>{e.preventDefault();posts.push({id:Date.now().toString(),title:$('#title').value.trim(),body:$('#body').value.trim(),nickname:profile.nickname,time:Date.now(),likes:0,likedBy:[]});set('commu_demo_posts',posts);e.target.reset();render()};$('#posts').addEventListener('click', function (event) {
+    const deleteButton = event.target.closest('button[data-del]');
     if (deleteButton && confirm('게시글을 삭제할까요?')) {
         posts = posts.filter(function (item) {
             return String(item.id) !== deleteButton.dataset.del;
         });
-
         set('commu_demo_posts', posts);
         render();
     }
