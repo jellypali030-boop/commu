@@ -244,9 +244,8 @@ textarea.field {
                 <h1> 채팅</h1><p class="muted"> COMMU 안의 독립된 채팅 페이지입니다.</p>
             </div>
             <section class="card">
-                <div class="notice">
-                    현재 채팅은 이 브라우저에 저장되는 시제품입니다. 다른 회원과 실시간으로 연결하려면 서버 기능이 필요합니다.
-                </div>
+                <div class="notice">Firebase 실시간 채팅입니다. 다른 회원과 같은 채팅방에서 대화할 수 있어요.</div>
+                <p class="muted" id="chatStatus" role="status">채팅 서버에 연결하고 있어요...</p>
                 <div class="chatbox" id="messages">
                 </div>
                 <form id="chatForm" class="row">
@@ -257,25 +256,109 @@ textarea.field {
                 <a class="btn alt" href="index.html"> ← 홈으로 돌아가기</a><p> COMMU · 함께 만드는 커뮤니티</p>
             </div>
         </main>
-        <script>
-const $=s=>document.querySelector(s),get=(k,d)=> {
-try {
-    return JSON.parse(localStorage.getItem(k))??d
-    }
-    catch {
-    return d
-    }
-},set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
-let profile=get('commu_demo_profile', {
-nickname:'새로운 회원'
-});
-let visitorId=localStorage.getItem('commu_demo_visitor_id');
-if(!visitorId) {
-visitorId='visitor_'+Date.now().toString(36);
-    localStorage.setItem('commu_demo_visitor_id',visitorId)
+        
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, collection, addDoc, query, orderBy, limit,
+  onSnapshot, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCad2Z3vp6TCsdIynlR-8WeWTH5FTAu06E",
+  authDomain: "commu-chat-4c35f.firebaseapp.com",
+  projectId: "commu-chat-4c35f",
+  storageBucket: "commu-chat-4c35f.firebasestorage.app",
+  messagingSenderId: "371606149626",
+  appId: "1:371606149626:web:47fdda1440716e54e56c43",
+  measurementId: "G-D71CX7RW30"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const messagesElement = document.querySelector("#messages");
+const chatForm = document.querySelector("#chatForm");
+const messageInput = document.querySelector("#message");
+const statusElement = document.querySelector("#chatStatus");
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, character => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  })[character]);
 }
-function safe(s) {
-return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))};let messages=get('commu_demo_messages',[]);function render(){ $('#messages').innerHTML=messages.map(m=>'<div class="bubble mine"><small>'+safe(m.nickname)+'</small>'+safe(m.text)+'</div>').join('')||'<div class="empty">아직 대화가 없어요.</div>';$('#messages').scrollTop=$('#messages').scrollHeight}$('#chatForm').onsubmit=e=>{e.preventDefault();let t=$('#message').value.trim();if(!t)return;messages.push({nickname:profile.nickname,text:t,time:Date.now()});set('commu_demo_messages',messages);$('#message').value='';render()};render();
+
+function showStatus(message, isError = false) {
+  if (!statusElement) return;
+  statusElement.textContent = message;
+  statusElement.style.color = isError ? "#c0395b" : "";
+}
+
+function renderMessages(documents) {
+  const messages = documents.slice().reverse();
+  messagesElement.innerHTML = messages.map(documentSnapshot => {
+    const message = documentSnapshot.data();
+    const time = message.createdAt?.toDate
+      ? message.createdAt.toDate().toLocaleString("ko-KR")
+      : "전송 중";
+    return `<div class="bubble"><small>${escapeHTML(message.nickname)} · ${escapeHTML(time)}</small>${escapeHTML(message.text)}</div>`;
+  }).join("") || '<div class="empty">아직 대화가 없어요. 첫 메시지를 남겨보세요.</div>';
+  messagesElement.scrollTop = messagesElement.scrollHeight;
+}
+
+async function startChat() {
+  try {
+    showStatus("채팅 서버에 연결하고 있어요...");
+    await signInAnonymously(auth);
+
+    const messagesQuery = query(
+      collection(db, "messages"),
+      orderBy("createdAt", "desc"),
+      limit(100)
+    );
+
+    onSnapshot(messagesQuery, snapshot => {
+      renderMessages(snapshot.docs);
+      showStatus("실시간 채팅에 연결됐어요.");
+    }, error => {
+      console.error("채팅 불러오기 오류:", error);
+      showStatus("채팅을 불러오지 못했어요. Firebase 규칙과 연결 상태를 확인해 주세요.", true);
+    });
+  } catch (error) {
+    console.error("Firebase 연결 오류:", error);
+    showStatus("로그인 또는 서버 연결에 실패했어요. Firebase 익명 로그인이 켜져 있는지 확인해 주세요.", true);
+  }
+}
+
+chatForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  const text = messageInput.value.trim();
+  if (!text) return;
+
+  const profile = JSON.parse(localStorage.getItem("commu_demo_profile") || '{"nickname":"새로운 회원"}');
+  const nickname = String(profile.nickname || "새로운 회원").trim().slice(0, 20);
+  const submitButton = chatForm.querySelector("button");
+  submitButton.disabled = true;
+
+  try {
+    await addDoc(collection(db, "messages"), {
+      nickname,
+      text: text.slice(0, 300),
+      createdAt: serverTimestamp()
+    });
+    messageInput.value = "";
+    showStatus("메시지를 전송했어요.");
+  } catch (error) {
+    console.error("메시지 전송 오류:", error);
+    showStatus("메시지 전송에 실패했어요. 잠시 후 다시 시도해 주세요.", true);
+  } finally {
+    submitButton.disabled = false;
+    messageInput.focus();
+  }
+});
+
+startChat();
 </script>
     </body>
 </html>
