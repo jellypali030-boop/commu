@@ -55,7 +55,7 @@ import {getFirestore,doc,getDoc,setDoc} from "https://www.gstatic.com/firebasejs
 const firebaseConfig={apiKey:"AIzaSyCad2Z3vp6TCsdIynlR-8WeWTH5FTAu06E",authDomain:"commu-chat-4c35f.firebaseapp.com",projectId:"commu-chat-4c35f",storageBucket:"commu-chat-4c35f.firebasestorage.app",messagingSenderId:"371606149626",appId:"1:371606149626:web:47fdda1440716e54e56c43",measurementId:"G-D71CX7RW30"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),$=s=>document.querySelector(s);
 const authReady=new Promise(resolve=>{const stop=onAuthStateChanged(auth,user=>{stop();resolve(user);});});
-async function ensureUser(){await authReady;await ensureUser();return auth.currentUser;}
+async function ensureUser(){ await authReady; if(!auth.currentUser) await signInAnonymously(auth); return auth.currentUser; }
 let stampData="";
 function preview(){const box=$("#previewStamp");box.innerHTML=stampData?'<img alt="선택한 인장 사진">':"🐰";if(stampData)box.querySelector("img").src=stampData;$("#previewNickname").textContent=$("#nickname").value.trim()||"새로운 회원";$("#previewBio").textContent=$("#bio").value.trim()||"상태 메시지를 입력해 주세요."}
 $("#nickname").addEventListener("input",preview);$("#bio").addEventListener("input",preview);
