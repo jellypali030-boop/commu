@@ -80,7 +80,7 @@ async function loginEmailForNickname(nickname){
 function loginInputs(){
  const nickname=$("#loginNickname").value.trim(),pin=$("#loginPin").value;
  if(nickname.length<2||nickname.length>16){$("#loginStatus").textContent="닉네임은 2~16자로 입력해 주세요.";return null}
- if(!/^\\d{6}$/.test(pin)){$("#loginStatus").textContent="비밀번호는 숫자 6자리로 입력해 주세요.";return null}
+ if(pin.length!==6||[...pin].some(ch=>ch<"0"||ch>"9")){$("#loginStatus").textContent="비밀번호는 숫자 6자리로 입력해 주세요.";return null}
  return {nickname,pin};
 }
 $("#setupLogin").addEventListener("click",async()=>{
