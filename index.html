@@ -559,15 +559,44 @@ function closeDeleteConfirmation() {
   deleteToolbar.classList.remove("visible");
 }
 
-// 내 채팅 말풍선을 한 번 누르면 삭제 확인 UI 표시
-messagesElement.addEventListener("click", event => {
-  const messageElement = event.target.closest(".chat-line[data-message-id]");
-  if (!messageElement || messageElement.dataset.mine !== "true") return;
+let pressTimer = null;
+let longPressTriggered = false;
 
+function showDeleteConfirmation(messageElement) {
+  if (!messageElement || messageElement.dataset.mine !== "true") return;
   messagesElement.querySelectorAll(".chat-line.selected").forEach(element => element.classList.remove("selected"));
   messageElement.classList.add("selected");
   selectedMessageId = messageElement.dataset.messageId;
   deleteToolbar.classList.add("visible");
+}
+
+function clearLongPressTimer() {
+  if (pressTimer) {
+    clearTimeout(pressTimer);
+    pressTimer = null;
+  }
+}
+
+// 내 채팅을 0.5초간 길게 눌렀을 때만 삭제 확인 UI 표시
+messagesElement.addEventListener("pointerdown", event => {
+  const messageElement = event.target.closest(".chat-line[data-message-id]");
+  if (!messageElement || messageElement.dataset.mine !== "true" || event.button !== 0) return;
+  clearLongPressTimer();
+  longPressTriggered = false;
+  pressTimer = setTimeout(() => {
+    longPressTriggered = true;
+    showDeleteConfirmation(messageElement);
+  }, 500);
+});
+
+["pointerup", "pointercancel", "pointerleave"].forEach(type => {
+  messagesElement.addEventListener(type, clearLongPressTimer);
+});
+
+// 길게 누르는 동안 브라우저 기본 텍스트 선택/컨텍스트 메뉴 방지
+messagesElement.addEventListener("contextmenu", event => {
+  const messageElement = event.target.closest(".chat-line[data-message-id]");
+  if (messageElement && messageElement.dataset.mine === "true") event.preventDefault();
 });
 
 cancelDeleteButton.addEventListener("click", closeDeleteConfirmation);
