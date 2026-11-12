@@ -176,7 +176,9 @@ async function startChat(){
   });
  }catch(error){
   console.error("Firebase 연결 오류:",error);
-  setStatus("로그인에 실패했어요. Firebase 익명 로그인이 켜져 있는지 확인해 주세요.",true);
+  const errorCode=error?.code||"unknown";
+  const errorMessage=error?.message||"상세 오류 없음";
+  setStatus("로그인 실패 ("+errorCode+"): "+errorMessage,true);
  }
 }
 form.addEventListener("submit",async event=>{
