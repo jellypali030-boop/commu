@@ -292,7 +292,8 @@ async function start(){
    count.textContent=members.length+"명";
    status.textContent="프로필 저장 회원 "+members.length+"명의 정보를 실시간으로 표시하고 있어요.";
    list.innerHTML=members.map(member=>{
-    const image=typeof member.stampData==="string"&&member.stampData.startsWith("data:image/")?'<img src="'+member.stampData+'" alt="">':safe(String(member.nickname||"회원").slice(0,1));
+    const adminStamp={"w3gDozAKgjbRMeRGf1Sl6KxDF4D2":"commu/image/IMG_4701.png","EMnYxuOTUNYpyP2xtSVk2KkoMMs2":"commu/image/IMG_4702.png","tTqhdEGjM7PH9h0udaKDE9zME5I2":"commu/image/IMG_4702.png"}[member.id];
+    const image=adminStamp?'<img src="'+adminStamp+'" alt="관리진 아이콘">':(typeof member.stampData==="string"&&member.stampData.startsWith("data:image/")?'<img src="'+member.stampData+'" alt="">':safe(String(member.nickname||"회원").slice(0,1)));
     return '<article class="member-card"><div class="member-avatar">'+image+'</div><div class="member-info"><strong>'+safe(member.nickname||"이름 없는 회원")+'</strong><p>'+safe(member.bio||"상태 메시지가 없어요.")+'</p></div></article>';
    }).join("")||'<div class="empty">아직 저장된 회원 프로필이 없어요.</div>';
   },error=>{
