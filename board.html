@@ -1,351 +1,102 @@
 <!doctype html>
 <html lang="ko">
-    <head>
-        <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title> 게시판 · COMMU</title>
-        <style>
-:root {
-    --bg:#f7f5fb;
-    --ink:#29243b;
-    --muted:#827d91;
-    --line:#ece8f2;
-    --p:#7862cf;
-    --soft:#f0ecfb;
-}
-* {
-    box-sizing:border-box;
-}
-body {
-    margin:0;
-    background:var(--bg);
-    color:var(--ink);
-    font:15px system-ui,'Malgun Gothic',sans-serif;
-    line-height:1.65;
-}
-button,input,textarea {
-    font:inherit;
-}
-a {
-    color:inherit;
-}
-header {
-    background:linear-gradient(115deg,#7560c9,#b18bda 60%,#e8a8c8);
-    color:white;
-    padding:22px 18px;
-}
-.top {
-    max-width:1000px;
-    margin:auto;
-}
-.brand {
-    font-size:26px;
-    font-weight:850;
-    letter-spacing:2px;
-    text-decoration:none;
-}
-.tag {
-    font-size:13px;
-    margin:2px 0 0;
-}
-.nav {
-    display:flex;
-    gap:6px;
-    overflow:auto;
-    margin-top:16px;
-}
-.nav a {
-    display:block;
-    text-decoration:none;
-    color:white;
-    padding:9px 13px;
-    border-radius:10px;
-    white-space:nowrap;
-}
-.nav a.active,.nav a:hover {
-    background:#fff;
-    color:var(--p);
-}
-main {
-    max-width:1000px;
-    margin:28px auto;
-    padding:0 16px 55px;
-}
-.eyebrow {
-    font-size:12px;
-    color:var(--p);
-    font-weight:800;
-    letter-spacing:1.4px;
-}
-.page-head {
-    margin-bottom:18px;
-}
-.page-head h1 {
-    font-size:clamp(27px,4vw,36px);
-    line-height:1.25;
-    margin:6px 0;
-}
-.muted {
-    font-size:13px;
-    color:var(--muted);
-}
-.card {
-    background:white;
-    border:1px solid var(--line);
-    border-radius:18px;
-    padding:22px;
-    margin-bottom:16px;
-    box-shadow:0 10px 30px #39245b0b;
-}
-.grid {
-    display:grid;
-    grid-template-columns:1.5fr .8fr;
-    gap:16px;
-}
-.row {
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-}
-.btn {
-    display:inline-block;
-    border:0;
-    border-radius:10px;
-    padding:10px 15px;
-    background:var(--p);
-    color:white;
-    text-decoration:none;
-    font-weight:700;
-    cursor:pointer;
-}
-.btn.alt {
-    background:var(--soft);
-    color:var(--p);
-}
-.heart-btn {
-    min-width:76px;
-    font-size:17px;
-    line-height:1;
-}
-.heart-btn.liked {
-    background:#fce8ef;
-    color:#df4774;
-}
-.heart-btn span {
-    font-size:13px;
-    margin-left:3px;
-}
-.field {
-    width:100%;
-    padding:12px;
-    border:1px solid var(--line);
-    border-radius:10px;
-    margin:7px 0 12px;
-    outline-color:#a998ed;
-}
-textarea.field {
-    min-height:110px;
-    resize:vertical;
-}
-.notice {
-    padding:12px;
-    background:#fff8e9;
-    border:1px solid #f3e5c6;
-    color:#85652a;
-    border-radius:10px;
-    font-size:13px;
-    margin:12px 0;
-}
-.post {
-    padding:16px 0;
-    border-bottom:1px solid var(--line);
-}
-.post p {
-    white-space:pre-wrap;
-    overflow-wrap:anywhere;
-}
-.meta {
-    font-size:12px;
-    color:var(--muted);
-}
-.empty {
-    text-align:center;
-    padding:25px;
-    color:var(--muted);
-}
-.chatbox {
-    height:360px;
-    overflow:auto;
-    background:#faf9fc;
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:12px;
-    margin:12px 0;
-}
-.bubble {
-    padding:9px 12px;
-    margin:8px 0;
-    background:white;
-    border:1px solid var(--line);
-    border-radius:12px;
-    overflow-wrap:anywhere;
-}
-.bubble.mine {
-    margin-left:auto;
-    background:var(--soft);
-    max-width:85%;
-}
-.bubble small {
-    display:block;
-    color:var(--muted);
-    font-size:11px;
-}
-.pill {
-    font-size:11px;
-    color:var(--p);
-    background:var(--soft);
-    padding:3px 8px;
-    border-radius:20px;
-}
-.role-icon {
-    display:inline-flex;
-    align-items:center;
-    vertical-align:-3px;
-    margin-left:4px;
-}
-.role-icon img {
-    width:26px;
-    height:26px;
-    object-fit:contain;
-}
-.footer {
-    text-align:center;
-    color:var(--muted);
-    font-size:12px;
-    padding:20px;
-}
-@media(max-width:700px) {
-    .grid {
-        grid-template-columns:1fr;
-    }
-    .card {
-        padding:17px;
-    }
-    .nav {
-        gap:2px;
-    }
-    .nav a {
-        padding:8px 10px;
-        font-size:13px;
-    }
-}
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>게시판 · COMMU</title>
+<style>
+:root{--bg:#f7f5fb;--ink:#29243b;--muted:#827d91;--line:#ece8f2;--p:#7862cf;--soft:#f0ecfb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,'Malgun Gothic',sans-serif;line-height:1.65}
+button,input,textarea{font:inherit}a{color:inherit}header{background:linear-gradient(115deg,#7560c9,#b18bda 60%,#e8a8c8);color:white;padding:22px 18px}
+.top,main{max-width:1000px;margin:auto}.brand{font-size:26px;font-weight:850;letter-spacing:2px;text-decoration:none}.tag{font-size:13px;margin:2px 0 0}
+.nav{display:flex;gap:6px;overflow:auto;margin-top:16px}.nav a{display:block;text-decoration:none;color:white;padding:9px 13px;border-radius:10px;white-space:nowrap}.nav a.active,.nav a:hover{background:#fff;color:var(--p)}
+main{margin:28px auto;padding:0 16px 55px}.eyebrow{font-size:12px;color:var(--p);font-weight:800;letter-spacing:1.4px}.page-head{margin-bottom:18px}.page-head h1{font-size:clamp(27px,4vw,36px);line-height:1.25;margin:6px 0}
+.muted,.meta{font-size:13px;color:var(--muted)}.card{background:white;border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:16px;box-shadow:0 10px 30px #39245b0b}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;padding:10px 15px;background:var(--p);color:white;text-decoration:none;font-weight:700;cursor:pointer}.btn.alt{background:var(--soft);color:var(--p)}.btn:disabled{opacity:.55;cursor:wait}
+.field{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;margin:7px 0 12px;outline-color:#a998ed;background:#fff}textarea.field{min-height:140px;resize:vertical}
+.toolbar{display:flex;gap:8px;align-items:center;margin:14px 0}.toolbar .field{margin:0}.search{flex:1;min-width:0}
+.post{padding:18px 0;border-bottom:1px solid var(--line)}.post:last-child{border-bottom:0}.post-title{font-size:17px;font-weight:750;cursor:pointer;overflow-wrap:anywhere}.post-title:hover{color:var(--p)}.post-preview{margin:8px 0;color:#5f596b;white-space:pre-wrap;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.post-meta{display:flex;gap:9px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:12px;margin-top:5px}.post-stats{display:flex;gap:12px;align-items:center;margin-top:10px}.tag-notice{display:inline-block;padding:2px 8px;border-radius:7px;background:#fff3df;color:#a16a17;font-size:11px;font-weight:800}
+.avatar{width:28px;height:28px;border-radius:9px;object-fit:cover;background:var(--soft);display:inline-grid;place-items:center;color:var(--p);font-weight:800;vertical-align:middle}
+.empty{text-align:center;padding:36px 12px;color:var(--muted)}.hidden{display:none!important}.footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
+.heart{background:#f8f6fb;color:#7d748c}.heart.liked{background:#fce8ef;color:#df4774}.image-preview{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.image-preview img{width:100px;height:100px;object-fit:cover;border-radius:12px}
+.detail-image{display:block;max-width:100%;max-height:560px;object-fit:contain;border-radius:12px;margin:14px auto}.detail-body{white-space:pre-wrap;overflow-wrap:anywhere;margin:18px 0}.comment{padding:12px 0;border-bottom:1px solid var(--line)}.comment:last-child{border-bottom:0}.comment p{margin:5px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.actions{display:flex;gap:7px;flex-wrap:wrap}.section-head{margin:0 0 12px}
+@media(max-width:700px){.card{padding:17px}.nav{gap:2px}.nav a{padding:8px 10px;font-size:13px}.toolbar{align-items:stretch;flex-wrap:wrap}.search{flex-basis:100%}.post-title{font-size:16px}}
 </style>
-    </head>
-    <body>
-        <header>
-            <div class="top">
-                <a class="brand" href="index.html"> COMMU</a><p class="tag"> 관심사를 나누고, 함께 만드는 우리들의 공간</p>
-                <nav class="nav">
-                    <a href="index.html"> 홈</a><a href="board.html" class="active"> 게시판</a><a href="chat.html" > 채팅</a><a href="mypage.html" > 마이페이지</a><a href="manage.html" > 관리진</a>
-                </nav>
-            </div>
-        </header>
-        <main>
-            <div class="page-head">
-                <div class="eyebrow">
-                    COMMUNITY BOARD
-                </div>
-                <h1> 게시판</h1><p class="muted"> COMMU 안의 독립된 게시판 페이지입니다.</p>
-            </div>
-            <div class="grid">
-                <section class="card">
-                    <h2> 새 글 작성</h2>
-                    <form id="postForm">
-                        <input class="field" id="title" maxlength="70" placeholder="제목을 입력해 주세요" required><textarea class="field" id="body" maxlength="1500" placeholder="함께 나누고 싶은 이야기를 적어주세요." required></textarea>
-                        <div class="row">
-                            <span class="muted"> 최대 1,500자</span><button class="btn"> 등록하기</button>
-                        </div>
-                    </form>
-                    <h2> 전체 게시글<span class="muted" id="boardCount"></span></h2>
-                    <div id="posts">
-                    </div>
-                </section>
-                <aside class="card">
-                    <h3> 게시판 이용 수칙</h3><p class="muted"> 서로를 존중해 주세요. 개인정보나 타인의 민감한 정보를 공개하지 말아 주세요.</p>
-                </aside>
-            </div>
-            <div class="footer">
-                <a class="btn alt" href="index.html"> ← 홈으로 돌아가기</a><p> COMMU · 함께 만드는 커뮤니티</p>
-            </div>
-        </main>
-        <script>
-const $=s=>document.querySelector(s),get=(k,d)=> {
-try {
-    return JSON.parse(localStorage.getItem(k))??d
-    }
-    catch {
-    return d
-    }
-},set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
-let profile=get('commu_demo_profile', {
-nickname:'새로운 회원'
-});
-let visitorId=localStorage.getItem('commu_demo_visitor_id');
-if(!visitorId) {
-visitorId='visitor_'+Date.now().toString(36);
-    localStorage.setItem('commu_demo_visitor_id',visitorId)
+</head>
+<body>
+<header><div class="top"><a class="brand" href="index.html">COMMU</a><p class="tag">관심사를 나누고, 함께 만드는 우리들의 공간</p><nav class="nav"><a href="index.html">홈</a><a href="board.html" class="active">게시판</a><a href="chat.html">채팅</a><a href="mypage.html">마이페이지</a><a href="manage.html">관리진</a></nav></div></header>
+<main>
+<div class="page-head"><div class="eyebrow">COMMUNITY BOARD</div><h1>게시판</h1><p class="muted">자유롭게 이야기를 나누고 서로의 생각을 공유해 보세요.</p></div>
+<section class="card" id="writeCard">
+ <div class="row"><div><h2 class="section-head" id="formHeading">새 글 작성</h2><p class="muted">사진은 한 장 첨부할 수 있어요.</p></div><span class="muted" id="writerName"></span></div>
+ <form id="postForm">
+  <input class="field" id="postTitle" maxlength="70" placeholder="제목을 입력해 주세요" required>
+  <textarea class="field" id="postBody" maxlength="5000" placeholder="함께 나누고 싶은 이야기를 적어주세요." required></textarea>
+  <label class="muted" for="postImage">사진 첨부 (선택)</label><input class="field" id="postImage" type="file" accept="image/*">
+  <div class="image-preview" id="imagePreview"></div>
+  <div class="row"><span class="muted">제목 70자 · 내용 5,000자</span><div class="actions"><button class="btn alt hidden" type="button" id="cancelEdit">취소</button><button class="btn" id="submitPost" type="submit">등록하기</button></div></div>
+ </form>
+ <p class="muted" id="formStatus" role="status"></p>
+</section>
+<section class="card">
+ <div class="row"><div><h2 class="section-head">전체 게시글 <span class="muted" id="postCount">0개</span></h2><p class="muted">공지사항은 목록 상단에 고정돼요.</p></div><button class="btn alt" id="refreshBtn" type="button">새로고침</button></div>
+ <div class="toolbar"><input class="field search" id="searchInput" placeholder="제목이나 내용으로 검색해 주세요" aria-label="게시글 검색"><span class="muted" id="searchCount"></span></div>
+ <div id="posts"><div class="empty">게시글을 불러오고 있어요.</div></div>
+</section>
+<section class="card hidden" id="detailCard">
+ <div class="row"><button class="btn alt" id="backToList" type="button">← 목록으로</button><span class="muted" id="detailStatus"></span></div>
+ <div id="detailContent"></div>
+ <div class="row" style="margin:18px 0"><button class="btn heart" id="detailLike" type="button">♡ 좋아요 0</button><span class="muted" id="detailOwnerActions"></span></div>
+ <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+ <h3>댓글 <span class="muted" id="commentCount"></span></h3>
+ <form id="commentForm"><textarea class="field" id="commentText" maxlength="1000" rows="3" placeholder="댓글을 입력해 주세요" required></textarea><div class="row"><span class="muted">최대 1,000자</span><button class="btn" type="submit">댓글 등록</button></div></form>
+ <div id="comments"><div class="empty">댓글을 불러오고 있어요.</div></div>
+</section>
+<div class="footer"><a class="btn alt" href="index.html">← 홈으로 돌아가기</a><p>COMMU · 함께 만드는 커뮤니티</p></div>
+</main>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,onAuthStateChanged,signInAnonymously} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,collection,doc,getDoc,getDocs,addDoc,setDoc,updateDoc,deleteDoc,query,orderBy,where,limit,onSnapshot,serverTimestamp,runTransaction,increment,writeBatch} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyCad2Z3vp6TCsdIynlR-8WeWTH5FTAu06E",authDomain:"commu-chat-4c35f.firebaseapp.com",projectId:"commu-chat-4c35f",storageBucket:"commu-chat-4c35f.firebasestorage.app",messagingSenderId:"371606149626",appId:"1:371606149626:web:47fdda1440716e54e56c43",measurementId:"G-D71CX7RW30"};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),$=s=>document.querySelector(s);
+const authReady=new Promise(resolve=>{const stop=onAuthStateChanged(auth,user=>{stop();resolve(user);});});
+async function ensureUser(){await authReady;if(!auth.currentUser)await signInAnonymously(auth);return auth.currentUser;}
+const safe=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let me=null,profile={},allPosts=[],activePost=null,editingId=null,selectedImage="",postsUnsub=null,commentsUnsub=null,liked=false;
+function isAdmin(){return profile.isAdmin===true||profile.admin===true||["admin","manager"," 최고 관리자","최고 관리자","일반 관리자"].includes(String(profile.role||"").trim());}
+function dateText(value){const d=value?.toDate?value.toDate():value?.seconds?new Date(value.seconds*1000):value?new Date(value):null;return d&&!Number.isNaN(d.getTime())?d.toLocaleString("ko-KR",{dateStyle:"medium",timeStyle:"short"}):"방금 전";}
+function status(msg,error=false){$("#formStatus").textContent=msg;$("#formStatus").style.color=error?"#c0395b":"";}
+async function compressImage(file){if(!file.type.startsWith("image/"))throw Error("이미지 파일만 첨부할 수 있어요.");if(file.size>12*1024*1024)throw Error("사진은 12MB 이하로 선택해 주세요.");const data=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)});const img=await new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=data});const max=1200,scale=Math.min(1,max/Math.max(img.width,img.height)),canvas=document.createElement("canvas");canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);const result=canvas.toDataURL("image/jpeg",.72);if(result.length>650000)throw Error("사진 용량이 커요. 더 작은 사진을 선택해 주세요.");return result;}
+function renderPreview(){const p=$("#imagePreview");p.innerHTML=selectedImage?'<img src="'+selectedImage+'" alt="첨부 사진 미리보기"><button type="button" class="btn alt" id="removeImage">사진 제거</button>':"";}
+$("#postImage").addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;try{status("사진을 준비하고 있어요...");selectedImage=await compressImage(file);renderPreview();status("사진을 첨부했어요.");}catch(err){status(err.message||"사진을 불러오지 못했어요.",true);e.target.value="";}});
+$("#imagePreview").addEventListener("click",e=>{if(e.target.id==="removeImage"){selectedImage="";$("#postImage").value="";renderPreview();}});
+function resetEditor(){editingId=null;selectedImage="";$("#postForm").reset();$("#imagePreview").innerHTML="";$("#formHeading").textContent="새 글 작성";$("#submitPost").textContent="등록하기";$("#cancelEdit").classList.add("hidden");status("");}
+$("#cancelEdit").addEventListener("click",resetEditor);
+async function start(){
+ try{me=await ensureUser();const snap=await getDoc(doc(db,"profiles",me.uid));profile=snap.exists()?snap.data():{};$("#writerName").textContent=(profile.nickname||"새로운 회원")+"님으로 작성";
+  postsUnsub=onSnapshot(query(collection(db,"posts"),orderBy("createdAt","desc"),limit(100)),snap=>{allPosts=snap.docs.map(d=>({id:d.id,...d.data()}));renderPosts();},err=>{console.error(err);$("#posts").innerHTML='<div class="empty">게시글을 불러오지 못했어요. Firestore 권한을 확인해 주세요. ('+safe(err.code||"오류")+')</div>';});
+ }catch(err){console.error(err);$("#posts").innerHTML='<div class="empty">로그인 또는 서버 연결에 실패했어요.</div>';}
 }
-function safe(s) {
-return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))};let posts=get('commu_demo_posts',[]);posts.forEach(p=>{if(!Array.isArray(p.likedBy))p.likedBy=[];if(typeof p.likes!=='number')p.likes=0});function render() {
-    $('#posts').innerHTML = posts.length
-        ? posts.slice().reverse().map(function (post) {
-            const liked = Array.isArray(post.likedBy) && post.likedBy.includes(visitorId);
-            return '<article class="post">' +
-                '<div class="row"><b>' + safe(post.title) + '</b><span class="meta">' + new Date(post.time).toLocaleString('ko-KR') + '</span></div>' +
-                '<div class="meta">' + safe(post.nickname || profile.nickname) + '</div>' +
-                '<p>' + safe(post.body) + '</p>' +
-                '<button type="button" class="btn heart-btn' + (liked ? ' liked' : '') + '" aria-label="' + (liked ? '공감 취소' : '공감하기') + '" onclick="toggleLike(\\'' + post.id + '\\')">' +
-                    '<span aria-hidden="true">' + (liked ? '♥' : '♡') + '</span> ' + post.likes +
-                '</button> ' +
-                '<button type="button" class="btn alt" data-del="' + post.id + '">삭제</button>' +
-            '</article>';
-        }).join('')
-        : '<div class="empty">아직 게시글이 없어요. 첫 이야기를 남겨보세요.</div>';
-    $('#boardCount').textContent = posts.length + '개';
+function renderPosts(){const term=$("#searchInput").value.trim().toLocaleLowerCase("ko");const filtered=allPosts.filter(p=>!term||String(p.title||"").toLocaleLowerCase("ko").includes(term)||String(p.body||"").toLocaleLowerCase("ko").includes(term)).sort((a,b)=>Number(!!b.isNotice)-Number(!!a.isNotice));$("#postCount").textContent=allPosts.length+"개";$("#searchCount").textContent=term?filtered.length+"개 검색":"";$("#posts").innerHTML=filtered.length?filtered.map(p=>'<article class="post"><div class="row"><div style="min-width:0;flex:1"><div class="post-title" data-open="'+safe(p.id)+'">'+(p.isNotice?'<span class="tag-notice">공지</span> ':"")+safe(p.title||"제목 없음")+'</div><div class="post-meta"><span>'+safe(p.nickname||"익명")+'</span><span>·</span><span>'+dateText(p.createdAt)+'</span></div></div><span class="meta">조회 '+Number(p.views||0)+'</span></div><div class="post-preview">'+safe(p.body||"")+'</div><div class="post-stats"><span class="meta">♡ '+Number(p.likesCount||0)+'</span><span class="meta">댓글 '+Number(p.commentsCount||0)+'</span></div></article>').join(""):'<div class="empty">'+(term?"검색 결과가 없어요.":"아직 게시글이 없어요. 첫 이야기를 남겨보세요.")+'</div>';}
+$("#searchInput").addEventListener("input",renderPosts);$("#refreshBtn").addEventListener("click",()=>{renderPosts();});
+$("#postForm").addEventListener("submit",async e=>{e.preventDefault();const title=$("#postTitle").value.trim(),body=$("#postBody").value.trim();if(!title||!body)return;const btn=$("#submitPost");btn.disabled=true;try{const data={title,body,nickname:profile.nickname||"새로운 회원",ownerUid:me.uid,updatedAt:serverTimestamp()};if(selectedImage)data.imageData=selectedImage;else if(editingId){const old=allPosts.find(p=>p.id===editingId);if(old?.imageData)data.imageData=old.imageData;}
+ if(editingId){const old=allPosts.find(p=>p.id===editingId);if(!old||old.ownerUid!==me.uid)throw Error("본인이 작성한 글만 수정할 수 있어요.");await updateDoc(doc(db,"posts",editingId),data);status("게시글을 수정했어요.");}else{data.createdAt=serverTimestamp();data.likesCount=0;data.commentsCount=0;data.isNotice=false;await addDoc(collection(db,"posts"),data);status("게시글을 등록했어요.");}
+ resetEditor();}catch(err){console.error(err);status(err.message||"게시글 저장에 실패했어요. Firestore 권한을 확인해 주세요.",true);}finally{btn.disabled=false;}});
+$("#posts").addEventListener("click",e=>{const target=e.target.closest("[data-open]");if(target)openPost(target.dataset.open);});
+async function openPost(id){const p=allPosts.find(x=>x.id===id);if(!p)return;activePost=p;$("#detailCard").classList.remove("hidden");$("#detailCard").scrollIntoView({behavior:"smooth",block:"start"});$("#detailContent").innerHTML=(p.isNotice?'<span class="tag-notice">공지사항</span>':"")+'<h2>'+safe(p.title)+'</h2><div class="post-meta"><span>'+safe(p.nickname||"익명")+'</span><span>·</span><span>'+dateText(p.createdAt)+'</span>'+(p.updatedAt?'<span>· 수정됨</span>':"")+'</div><div class="detail-body">'+safe(p.body)+'</div>'+(p.imageData?'<img class="detail-image" src="'+p.imageData+'" alt="게시글 첨부 사진">':"")+'<div class="actions" id="postOwnerActions"></div>';
+ $("#postOwnerActions").innerHTML=p.ownerUid===me.uid?'<button class="btn alt" id="editPost">수정</button><button class="btn alt" id="deletePost">삭제</button>':"";
+ $("#detailOwnerActions").textContent=p.nickname||"";
+ $("#detailLike").textContent="♡ 좋아요 "+Number(p.likesCount||0);$("#detailLike").classList.remove("liked");
+ const likeRef=doc(db,"posts",id,"likes",me.uid);const likeSnap=await getDoc(likeRef);liked=likeSnap.exists();$("#detailLike").textContent=(liked?"♥":"♡")+" 좋아요 "+Number(p.likesCount||0);$("#detailLike").classList.toggle("liked",liked);
+ if(commentsUnsub)commentsUnsub();commentsUnsub=onSnapshot(query(collection(db,"comments"),where("postId","==",id)),snap=>{const rows=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));$("#commentCount").textContent=rows.length+"개";$("#comments").innerHTML=rows.length?rows.map(c=>'<div class="comment"><div class="row"><strong>'+safe(c.nickname||"익명")+'</strong><span class="meta">'+dateText(c.createdAt)+'</span></div><p>'+safe(c.text)+'</p>'+(c.ownerUid===me.uid?'<button class="btn alt" data-delete-comment="'+safe(c.id)+'" type="button">삭제</button>':"")+'</div>').join(""):'<div class="empty">첫 댓글을 남겨보세요.</div>';},err=>{$("#comments").textContent="댓글을 불러오지 못했어요: "+(err.code||"오류");});
 }
-
-window.toggleLike = function (postId) {
-    const post = posts.find(function (item) {
-        return String(item.id) === String(postId);
-    });
-    if (!post) return;
-
-    if (!Array.isArray(post.likedBy)) post.likedBy = [];
-    post.likes = Number(post.likes) || 0;
-
-    const likedIndex = post.likedBy.indexOf(visitorId);
-    if (likedIndex >= 0) {
-        post.likedBy.splice(likedIndex, 1);
-        post.likes = Math.max(0, post.likes - 1);
-    } else {
-        post.likedBy.push(visitorId);
-        post.likes += 1;
-    }
-
-    set('commu_demo_posts', posts);
-    render();
-};
-$('#postForm').onsubmit=e=>{e.preventDefault();posts.push({id:Date.now().toString(),title:$('#title').value.trim(),body:$('#body').value.trim(),nickname:profile.nickname,time:Date.now(),likes:0,likedBy:[]});set('commu_demo_posts',posts);e.target.reset();render()};$('#posts').addEventListener('click', function (event) {
-    const deleteButton = event.target.closest('button[data-del]');
-    if (deleteButton && confirm('게시글을 삭제할까요?')) {
-        posts = posts.filter(function (item) {
-            return String(item.id) !== deleteButton.dataset.del;
-        });
-        set('commu_demo_posts', posts);
-        render();
-    }
-});
-
-render();
+$("#backToList").addEventListener("click",()=>{$("#detailCard").classList.add("hidden");activePost=null;if(commentsUnsub){commentsUnsub();commentsUnsub=null;}});
+$("#detailLike").addEventListener("click",async()=>{if(!activePost)return;const id=activePost.id,likeRef=doc(db,"posts",id,"likes",me.uid),postRef=doc(db,"posts",id);try{await runTransaction(db,async tx=>{const [likeSnap,postSnap]=await Promise.all([tx.get(likeRef),tx.get(postRef)]);if(!postSnap.exists())throw Error("게시글이 삭제되었어요.");if(likeSnap.exists()){tx.delete(likeRef);tx.update(postRef,{likesCount:increment(-1)});}else{tx.set(likeRef,{uid:me.uid,createdAt:serverTimestamp()});tx.update(postRef,{likesCount:increment(1)});}});const fresh=await getDoc(postRef);activePost={id,...fresh.data()};$("#detailLike").textContent=(liked?"♡":"♥")+" 좋아요 "+Number(activePost.likesCount||0);$("#detailLike").classList.toggle("liked",!liked);liked=!liked;}catch(err){console.error(err);$("#detailStatus").textContent="좋아요 처리 실패: "+(err.code||err.message);}});
+$("#commentForm").addEventListener("submit",async e=>{e.preventDefault();if(!activePost)return;const text=$("#commentText").value.trim();if(!text)return;const btn=e.target.querySelector("button");btn.disabled=true;try{await addDoc(collection(db,"comments"),{postId:activePost.id,ownerUid:me.uid,nickname:profile.nickname||"새로운 회원",text,createdAt:serverTimestamp()});await updateDoc(doc(db,"posts",activePost.id),{commentsCount:increment(1)});$("#commentText").value="";}catch(err){console.error(err);$("#detailStatus").textContent="댓글 등록 실패: "+(err.code||"권한을 확인해 주세요.");}finally{btn.disabled=false;}});
+$("#comments").addEventListener("click",async e=>{const b=e.target.closest("[data-delete-comment]");if(!b||!confirm("댓글을 삭제할까요?"))return;try{const ref=doc(db,"comments",b.dataset.deleteComment),snap=await getDoc(ref);if(!snap.exists()||snap.data().ownerUid!==me.uid)throw Error("본인 댓글만 삭제할 수 있어요.");await deleteDoc(ref);await updateDoc(doc(db,"posts",activePost.id),{commentsCount:increment(-1)});}catch(err){console.error(err);$("#detailStatus").textContent="댓글 삭제 실패: "+(err.code||err.message);}});
+$("#postOwnerActions").addEventListener("click",async e=>{if(e.target.id==="editPost"){const p=activePost;if(p.ownerUid!==me.uid)return;editingId=p.id;$("#postTitle").value=p.title||"";$("#postBody").value=p.body||"";selectedImage=p.imageData||"";renderPreview();$("#formHeading").textContent="게시글 수정";$("#submitPost").textContent="수정 완료";$("#cancelEdit").classList.remove("hidden");$("#writeCard").scrollIntoView({behavior:"smooth"});}if(e.target.id==="deletePost"){if(!activePost||activePost.ownerUid!==me.uid||!confirm("게시글을 삭제할까요? 댓글과 좋아요도 함께 삭제됩니다."))return;try{const id=activePost.id;const [comments,likes]=await Promise.all([getDocs(query(collection(db,"comments"),where("postId","==",id))),getDocs(collection(db,"posts",id,"likes"))]);for(const docs of [comments,likes]){for(let i=0;i<docs.docs.length;i+=450){const batch=writeBatch(db);docs.docs.slice(i,i+450).forEach(d=>batch.delete(d.ref));await batch.commit();}}await deleteDoc(doc(db,"posts",id));$("#detailCard").classList.add("hidden");activePost=null;if(commentsUnsub)commentsUnsub();}catch(err){console.error(err);$("#detailStatus").textContent="삭제 실패: "+(err.code||"권한을 확인해 주세요.");}}});
+start();
 </script>
-    </body>
-</html>
+</body></html>
