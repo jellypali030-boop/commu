@@ -42,8 +42,8 @@ main{margin:28px auto;padding:0 16px 55px}.eyebrow{font-size:12px;color:var(--p)
  <p class="muted" id="formStatus" role="status"></p>
 </section>
 <section class="card">
- <div class="row"><div><h2 class="section-head">전체 게시글 <span class="muted" id="postCount">0개</span></h2><p class="muted">공지사항은 목록 상단에 고정돼요.</p></div><div class="actions"><button class="icon-btn" id="openWrite" type="button" aria-label="새 글 추가" title="새 글 추가">+</button></div></div>
- <form class="toolbar" id="searchForm"><input class="field search hidden" id="searchInput" placeholder="제목이나 내용으로 검색해 주세요" aria-label="게시글 검색"><button class="icon-btn search-btn" id="searchToggle" type="button" aria-label="검색창 열기" aria-expanded="false" title="검색"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg></button><span class="muted" id="searchCount"></span></form>
+ <div class="row"><div><h2 class="section-head">전체 게시글 <span class="muted" id="postCount">0개</span></h2><p class="muted">공지사항은 목록 상단에 고정돼요.</p></div><div class="actions"><button class="icon-btn search-btn" id="searchToggle" type="button" aria-label="검색창 열기" aria-expanded="false" title="검색"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg></button><button class="icon-btn" id="openWrite" type="button" aria-label="새 글 추가" title="새 글 추가">+</button></div></div>
+ <form class="toolbar" id="searchForm"><input class="field search hidden" id="searchInput" placeholder="제목이나 내용으로 검색해 주세요" aria-label="게시글 검색"><span class="muted" id="searchCount"></span></form>
  <div id="posts"><div class="empty">게시글을 불러오고 있어요.</div></div>
 </section>
 <section class="card hidden" id="detailCard">
@@ -75,7 +75,7 @@ function renderPreview(){const p=$("#imagePreview");p.innerHTML=selectedImage?'<
 $("#postImage").addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;try{status("사진을 준비하고 있어요...");selectedImage=await compressImage(file);renderPreview();status("사진을 첨부했어요.");}catch(err){status(err.message||"사진을 불러오지 못했어요.",true);e.target.value="";}});
 $("#imagePreview").addEventListener("click",e=>{if(e.target.id==="removeImage"){selectedImage="";$("#postImage").value="";renderPreview();}});
 function resetEditor(){editingId=null;selectedImage="";$("#postForm").reset();$("#imagePreview").innerHTML="";$("#formHeading").textContent="새 글 작성";$("#submitPost").textContent="등록하기";$("#cancelEdit").classList.add("hidden");$("#noticeToggle").checked=false;status("");$("#writeCard").classList.add("hidden");}
-$("#cancelEdit").addEventListener("click",()=>{const hasDraft=$("#postTitle").value.trim()||$("#postBody").value.trim()||selectedImage;if(hasDraft&&!confirm("작성 중인 내용을 취소할까요? 입력한 내용은 저장되지 않아요."))return;resetEditor();});
+$("#cancelEdit").addEventListener("click",()=>{if(!confirm("정말 취소하시겠습니까? 작성 중인 내용은 저장되지 않습니다."))return;resetEditor();});
 $("#openWrite").addEventListener("click",()=>{resetEditor();$("#cancelEdit").classList.remove("hidden");$("#writeCard").classList.remove("hidden");$("#writeCard").scrollIntoView({behavior:"smooth",block:"start"});$("#postTitle").focus();});
 async function start(){
  try{me=await ensureUser();const snap=await getDoc(doc(db,"profiles",me.uid));profile=snap.exists()?snap.data():{};$("#writerName").textContent=(profile.nickname||"새로운 회원")+"님으로 작성";if(isAdmin())$("#noticeOption").classList.remove("hidden");
