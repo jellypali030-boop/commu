@@ -50,10 +50,12 @@ main{margin:28px auto;padding:0 16px 55px}.eyebrow{font-size:12px;color:var(--p)
 </main>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getAuth,signInAnonymously,EmailAuthProvider,linkWithCredential,signInWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getAuth,onAuthStateChanged,signInAnonymously,EmailAuthProvider,linkWithCredential,signInWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {getFirestore,doc,getDoc,setDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyCad2Z3vp6TCsdIynlR-8WeWTH5FTAu06E",authDomain:"commu-chat-4c35f.firebaseapp.com",projectId:"commu-chat-4c35f",storageBucket:"commu-chat-4c35f.firebasestorage.app",messagingSenderId:"371606149626",appId:"1:371606149626:web:47fdda1440716e54e56c43",measurementId:"G-D71CX7RW30"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),$=s=>document.querySelector(s);
+const authReady=new Promise(resolve=>{const stop=onAuthStateChanged(auth,user=>{stop();resolve(user);});});
+async function ensureUser(){await authReady;await ensureUser();return auth.currentUser;}
 let stampData="";
 function preview(){const box=$("#previewStamp");box.innerHTML=stampData?'<img alt="선택한 인장 사진">':"🐰";if(stampData)box.querySelector("img").src=stampData;$("#previewNickname").textContent=$("#nickname").value.trim()||"새로운 회원";$("#previewBio").textContent=$("#bio").value.trim()||"상태 메시지를 입력해 주세요."}
 $("#nickname").addEventListener("input",preview);$("#bio").addEventListener("input",preview);
@@ -61,7 +63,7 @@ $("#chooseStamp").addEventListener("click",()=>$("#stampFile").click());
 $("#removeStamp").addEventListener("click",()=>{stampData="";$("#stampFile").value="";preview();$("#status").textContent="인장 사진을 삭제했어요. 저장을 눌러 적용해 주세요."});
 $("#stampFile").addEventListener("change",event=>{const file=event.target.files?.[0];if(!file)return;if(!file.type.startsWith("image/")){$("#status").textContent="이미지 파일을 선택해 주세요.";return}if(file.size>10*1024*1024){$("#status").textContent="10MB 이하의 사진을 선택해 주세요.";return}
 const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const canvas=document.createElement("canvas"),max=320,scale=Math.min(1,max/Math.max(img.width,img.height));canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);stampData=canvas.toDataURL("image/jpeg",0.78);preview();$("#status").textContent="인장을 선택했어요. 프로필 저장을 눌러주세요."};img.onerror=()=>$("#status").textContent="사진을 읽지 못했어요. 다른 이미지를 선택해 주세요.";img.src=reader.result};reader.readAsDataURL(file)});
-async function loadProfile(){try{if(!auth.currentUser)await signInAnonymously(auth);const saved=(await getDoc(doc(db,"profiles",auth.currentUser.uid))).data()||{};$("#nickname").value=saved.nickname||"새로운 회원";$("#bio").value=saved.bio||"";stampData=saved.stampData||"";localStorage.setItem("commu_demo_profile",JSON.stringify({nickname:$("#nickname").value,bio:$("#bio").value,stampData}));preview()}catch(error){console.error(error);const cached=JSON.parse(localStorage.getItem("commu_demo_profile")||"{}");$("#nickname").value=cached.nickname||"새로운 회원";$("#bio").value=cached.bio||"";stampData=cached.stampData||"";preview();$("#status").textContent="서버에서 프로필을 불러오지 못했어요. 연결 상태를 확인해 주세요."}}
+async function loadProfile(){try{await ensureUser();const saved=(await getDoc(doc(db,"profiles",auth.currentUser.uid))).data()||{};$("#nickname").value=saved.nickname||"새로운 회원";$("#bio").value=saved.bio||"";stampData=saved.stampData||"";localStorage.setItem("commu_demo_profile",JSON.stringify({nickname:$("#nickname").value,bio:$("#bio").value,stampData}));preview()}catch(error){console.error(error);const cached=JSON.parse(localStorage.getItem("commu_demo_profile")||"{}");$("#nickname").value=cached.nickname||"새로운 회원";$("#bio").value=cached.bio||"";stampData=cached.stampData||"";preview();$("#status").textContent="서버에서 프로필을 불러오지 못했어요. 연결 상태를 확인해 주세요."}}
 $("#saveProfile").addEventListener("click",async()=>{
  const nickname=$("#nickname").value.trim(),bio=$("#bio").value.trim(),pin=$("#profilePassword").value;
  if(nickname.length<2||nickname.length>16){$("#status").textContent="이름은 2~16자로 입력해 주세요.";return}
@@ -99,6 +101,7 @@ $("#loginProfile").addEventListener("click",async()=>{
  const data=loginInputs();if(!data)return;
  const button=$("#loginProfile");button.disabled=true;$("#loginStatus").textContent="프로필을 확인하고 있어요...";
  try{
+  await authReady;
   const email=await loginEmailForNickname(data.nickname);
   await signInWithEmailAndPassword(auth,email,data.pin);
   const saved=(await getDoc(doc(db,"profiles",auth.currentUser.uid))).data()||{};
