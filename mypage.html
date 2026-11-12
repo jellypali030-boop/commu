@@ -51,7 +51,7 @@ main{margin:28px auto;padding:0 16px 55px}.eyebrow{font-size:12px;color:var(--p)
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getAuth,onAuthStateChanged,signInAnonymously,EmailAuthProvider,linkWithCredential,signInWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {getFirestore,doc,getDoc,setDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {getFirestore,doc,getDoc,setDoc,collection,query,where,getDocs,writeBatch} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyCad2Z3vp6TCsdIynlR-8WeWTH5FTAu06E",authDomain:"commu-chat-4c35f.firebaseapp.com",projectId:"commu-chat-4c35f",storageBucket:"commu-chat-4c35f.firebasestorage.app",messagingSenderId:"371606149626",appId:"1:371606149626:web:47fdda1440716e54e56c43",measurementId:"G-D71CX7RW30"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),$=s=>document.querySelector(s);
 const authReady=new Promise(resolve=>{const stop=onAuthStateChanged(auth,user=>{stop();resolve(user);});});
@@ -102,12 +102,32 @@ $("#loginProfile").addEventListener("click",async()=>{
  const button=$("#loginProfile");button.disabled=true;$("#loginStatus").textContent="프로필을 확인하고 있어요...";
  try{
   await authReady;
+  // 로그인 전 이 기기에서 사용하던 익명 UID를 기억해 둡니다.
+  const previousUser=auth.currentUser;
+  const previousAnonymousUid=previousUser?.isAnonymous?previousUser.uid:null;
   const email=await loginEmailForNickname(data.nickname);
-  await signInWithEmailAndPassword(auth,email,data.pin);
-  const saved=(await getDoc(doc(db,"profiles",auth.currentUser.uid))).data()||{};
+  const credential=await signInWithEmailAndPassword(auth,email,data.pin);
+  const newUid=credential.user.uid;
+  const saved=(await getDoc(doc(db,"profiles",newUid))).data()||{};
   $("#nickname").value=saved.nickname||data.nickname;$("#bio").value=saved.bio||"";stampData=saved.stampData||"";
   localStorage.setItem("commu_demo_profile",JSON.stringify({nickname:$("#nickname").value,bio:$("#bio").value,stampData}));
-  preview();$("#loginPin").value="";$("#loginStatus").textContent="기존 프로필을 불러왔어요!";
+  preview();$("#loginPin").value="";
+  if(previousAnonymousUid && previousAnonymousUid!==newUid){
+   try{
+    const oldMessages=await getDocs(query(collection(db,"messages"),where("ownerUid","==",previousAnonymousUid)));
+    for(let start=0;start<oldMessages.docs.length;start+=450){
+     const batch=writeBatch(db);
+     oldMessages.docs.slice(start,start+450).forEach(messageDoc=>batch.update(messageDoc.ref,{ownerUid:newUid}));
+     await batch.commit();
+    }
+    $("#loginStatus").textContent=oldMessages.empty?"기존 프로필을 불러왔어요! 이전 익명 계정의 채팅은 없어요.":`기존 프로필을 불러왔어요! 이전 채팅 ${oldMessages.size}개를 내 계정으로 연결했어요.`;
+   }catch(migrationError){
+    console.error("이전 채팅 연결 오류:",migrationError);
+    $("#loginStatus").textContent="로그인은 성공했지만 이전 채팅 연결에 실패했어요. Firestore 보안 규칙에서 메시지 작성자 변경 권한을 확인해야 해요.";
+   }
+  }else{
+   $("#loginStatus").textContent="기존 프로필을 불러왔어요!";
+  }
  }catch(error){console.error(error);$("#loginStatus").textContent=error.code==="auth/invalid-credential"?"닉네임 또는 비밀번호가 올바르지 않아요.":"로그인 실패: "+(error.code||error.message)}
  finally{button.disabled=false}
 });
