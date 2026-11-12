@@ -273,6 +273,25 @@ textarea.field {
 
 .chat-delete{display:none!important;visibility:hidden!important}
 .chat-delete-toolbar[hidden]{display:none!important;visibility:hidden!important}
+
+/* 최종 안전장치: 메시지 말풍선 안/아래의 구형 삭제 버튼은 항상 숨김 */
+#messages .chat-line button,
+#messages .chat-line [role="button"],
+#messages .chat-line .chat-delete,
+#messages .chat-line [class*="delete"],
+#messages .chat-line [id*="delete"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+#messages > .chat-delete,
+#messages > button,
+#messages > [class*="delete"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
 </style>
     </head>
     <body>
