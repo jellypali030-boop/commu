@@ -261,8 +261,10 @@ textarea.field {
 .chat-line.selected .bubble{outline:2px solid #8b75dc;outline-offset:2px}
 .chat-delete-toolbar{display:none;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:#fff;border:1px solid var(--line);border-top:0}
 .chat-delete-toolbar.visible{display:flex}
-.chat-delete-toolbar span{font-size:12px;color:var(--muted)}
+.chat-delete-toolbar span{font-size:13px;color:var(--muted);font-weight:600}
+.chat-delete-actions{display:flex;gap:7px}
 .chat-delete-toolbar button{border:0;border-radius:9px;padding:8px 14px;background:#fff0f1;color:#b94d60;font-weight:700}
+.chat-delete-toolbar button.chat-cancel-delete{background:#f2f0f5;color:#706a7b}
 .chat-delete-toolbar button:disabled{opacity:.5;cursor:wait}
 
 .chat-line.mine{align-self:flex-end;flex-direction:row-reverse}
@@ -353,7 +355,7 @@ textarea.field {
                     <div class="chat-room-head"><div class="chat-room-title"><span class="chat-room-avatar">C</span><div><strong>COMMU 라운지</strong><small>모두와 자유롭게 이야기해요</small></div></div><span class="chat-live">실시간 채팅</span></div>
                     <p id="chatStatus" role="status">채팅 서버에 연결하고 있어요...</p>
                     <div class="chatbox" id="messages" aria-live="polite"><div class="chat-empty"><strong>COMMU 라운지에 오신 걸 환영해요!</strong>첫 메시지로 대화를 시작해 보세요.</div></div>
-                    <div class="chat-delete-toolbar" id="chatDeleteToolbar"><span>메시지를 선택했어요</span><button type="button" id="deleteSelectedMessage">선택한 채팅 삭제</button></div>
+                    <div class="chat-delete-toolbar" id="chatDeleteToolbar"><span id="deleteConfirmText">이 채팅을 삭제하시겠습니까?</span><div class="chat-delete-actions"><button type="button" id="cancelDeleteMessage" class="chat-cancel-delete">취소</button><button type="button" id="deleteSelectedMessage">삭제</button></div></div>
                     <form id="chatForm" class="chat-composer">
                         <input class="field" id="message" maxlength="300" placeholder="메시지를 입력해 주세요" aria-label="메시지 입력" required><button class="btn" type="submit">전송</button>
                     </form>
@@ -548,52 +550,35 @@ function renderMessages(documents) {
 
 const deleteToolbar = document.querySelector("#chatDeleteToolbar");
 const deleteSelectedButton = document.querySelector("#deleteSelectedMessage");
+const cancelDeleteButton = document.querySelector("#cancelDeleteMessage");
 let selectedMessageId = null;
-let pressTimer = null;
 
-function selectOwnMessage(messageElement) {
+function closeDeleteConfirmation() {
+  selectedMessageId = null;
+  messagesElement.querySelectorAll(".chat-line.selected").forEach(element => element.classList.remove("selected"));
+  deleteToolbar.classList.remove("visible");
+}
+
+// 내 채팅 말풍선을 한 번 누르면 삭제 확인 UI 표시
+messagesElement.addEventListener("click", event => {
+  const messageElement = event.target.closest(".chat-line[data-message-id]");
   if (!messageElement || messageElement.dataset.mine !== "true") return;
+
   messagesElement.querySelectorAll(".chat-line.selected").forEach(element => element.classList.remove("selected"));
   messageElement.classList.add("selected");
   selectedMessageId = messageElement.dataset.messageId;
   deleteToolbar.classList.add("visible");
-}
-
-function clearPressTimer() {
-  if (pressTimer) {
-    clearTimeout(pressTimer);
-    pressTimer = null;
-  }
-}
-
-// 모바일: 0.5초 길게 누르기
-messagesElement.addEventListener("pointerdown", event => {
-  const messageElement = event.target.closest(".chat-line[data-message-id]");
-  if (!messageElement || messageElement.dataset.mine !== "true") return;
-  clearPressTimer();
-  pressTimer = setTimeout(() => selectOwnMessage(messageElement), 500);
-});
-["pointerup", "pointerleave", "pointercancel", "pointermove"].forEach(type => {
-  messagesElement.addEventListener(type, clearPressTimer);
 });
 
-// PC: 마우스 오른쪽 클릭
-messagesElement.addEventListener("contextmenu", event => {
-  const messageElement = event.target.closest(".chat-line[data-message-id]");
-  if (!messageElement || messageElement.dataset.mine !== "true") return;
-  event.preventDefault();
-  selectOwnMessage(messageElement);
-});
+cancelDeleteButton.addEventListener("click", closeDeleteConfirmation);
 
 deleteSelectedButton.addEventListener("click", async () => {
   if (!selectedMessageId || !auth.currentUser) return;
-  if (!confirm("선택한 메시지를 삭제할까요?")) return;
   const messageId = selectedMessageId;
   deleteSelectedButton.disabled = true;
   try {
     await deleteDoc(doc(db, "messages", messageId));
-    selectedMessageId = null;
-    deleteToolbar.classList.remove("visible");
+    closeDeleteConfirmation();
   } catch (error) {
     console.error("메시지 삭제 오류:", error);
     showStatus("메시지 삭제에 실패했어요. Firestore 보안 규칙을 확인해 주세요.", true);
