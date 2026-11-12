@@ -546,7 +546,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const authReady = new Promise(resolve => { const stop = onAuthStateChanged(auth, user => { stop(); resolve(user); }); });
-async function ensureUser(){ await authReady; await ensureUser(); return auth.currentUser; }
+async function ensureUser(){ await authReady; if(!auth.currentUser) await signInAnonymously(auth); return auth.currentUser; }
 const db = getFirestore(app);
 const messagesElement = document.querySelector("#messages");
 const chatForm = document.querySelector("#chatForm");
