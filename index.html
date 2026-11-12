@@ -304,6 +304,26 @@ textarea.field {
   visibility: hidden !important;
   pointer-events: none !important;
 }
+
+/* 내 메시지는 프로필 사진과 닉네임 없이 말풍선만 표시 */
+#messages .chat-line.mine .chat-avatar,
+#messages .chat-line.mine .chat-name {
+  display: none !important;
+}
+/* 채팅 목록 안에 남아 있는 구형 삭제 버튼은 위치와 클래스에 관계없이 숨김 */
+#messages button,
+#messages input[type="button"],
+#messages input[type="submit"],
+#messages [role="button"],
+#messages .chat-delete,
+#messages [class*="delete"],
+#messages [id*="delete"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 </style>
     </head>
     <body>
@@ -559,9 +579,9 @@ function renderMessages(documents) {
       : "전송 중";
     const initial = escapeHTML(nickname.slice(0, 1).toUpperCase());
     return `<div class="chat-line ${mine ? "mine" : ""} ${sameAuthor ? "same-author" : ""}" data-message-id="${escapeHTML(documentSnapshot.id)}" data-mine="${mine ? "true" : "false"}">
-      <span class="chat-avatar" aria-hidden="true">${initial}</span>
+      ${mine ? "" : `<span class="chat-avatar" aria-hidden="true">${initial}</span>`}
       <div class="chat-content">
-        <span class="chat-name">${escapeHTML(nickname)}</span>
+        ${mine ? "" : `<span class="chat-name">${escapeHTML(nickname)}</span>`}
         <span class="bubble">${escapeHTML(message.text)}</span>
       </div>
       <time class="chat-time">${escapeHTML(time)}</time>
