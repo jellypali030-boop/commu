@@ -1,0 +1,194 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Trusted board administrators (UID allowlist)
+    function isBoardAdmin() {
+      return request.auth != null
+        && request.auth.uid in [
+          'w3gDozAKgjbRMeRGf1Sl6KxDF4D2',
+          'EMnYxuOTUNYpyP2xtSVk2KkoMMs2'
+        ];
+    }
+
+    // Chat messages
+    match /messages/{messageId} {
+      allow read: if request.auth != null;
+
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly([
+          'ownerUid', 'nickname', 'text', 'createdAt'
+        ])
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.nickname is string
+        && request.resource.data.nickname.size() > 0
+        && request.resource.data.nickname.size() <= 20
+        && request.resource.data.text is string
+        && request.resource.data.text.size() > 0
+        && request.resource.data.text.size() <= 300
+        && request.resource.data.createdAt == request.time;
+
+      allow delete: if request.auth != null
+        && resource.data.ownerUid == request.auth.uid;
+
+      allow update: if false;
+    }
+
+    // Member profiles
+    match /profiles/{userId} {
+      allow read: if request.auth != null;
+
+      allow create, update: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly([
+          'nickname', 'bio', 'stampData'
+        ])
+        && request.resource.data.nickname is string
+        && request.resource.data.bio is string
+        && request.resource.data.stampData is string;
+    }
+
+    // Board posts
+    match /posts/{postId} {
+      allow read: if request.auth != null;
+
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly([
+          'title', 'body', 'nickname', 'ownerUid',
+          'createdAt', 'likesCount', 'commentsCount',
+          'isNotice', 'imageData'
+        ])
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 70
+        && request.resource.data.body is string
+        && request.resource.data.body.size() > 0
+        && request.resource.data.body.size() <= 5000
+        && request.resource.data.nickname is string
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.likesCount == 0
+        && request.resource.data.commentsCount == 0
+        && request.resource.data.isNotice == false
+        && (
+          !('imageData' in request.resource.data)
+          || (
+            request.resource.data.imageData is string
+            && request.resource.data.imageData.size() <= 700000
+          )
+        );
+
+      allow update: if request.auth != null && (
+        // Owner edits, or an administrator edits/moderates
+        (
+          (resource.data.ownerUid == request.auth.uid || isBoardAdmin())
+          && request.resource.data.ownerUid == resource.data.ownerUid
+          && request.resource.data.diff(resource.data)
+            .affectedKeys().hasOnly([
+              'title', 'body', 'nickname', 'updatedAt',
+              'editedAt', 'imageData', 'isNotice'
+            ])
+          && (
+            isBoardAdmin()
+            || !request.resource.data.diff(resource.data)
+              .affectedKeys().hasAny(['isNotice'])
+          )
+        )
+        ||
+        // The current board client updates these counters separately.
+        (
+          request.resource.data.diff(resource.data)
+            .affectedKeys().hasOnly(['commentsCount'])
+          && (
+            request.resource.data.commentsCount
+              == resource.data.commentsCount + 1
+            || request.resource.data.commentsCount
+              == resource.data.commentsCount - 1
+          )
+        )
+        ||
+        // Like document and counter are changed in one transaction.
+        (
+          request.resource.data.diff(resource.data)
+            .affectedKeys().hasOnly(['likesCount'])
+          && (
+            (
+              request.resource.data.likesCount
+                == resource.data.likesCount + 1
+              && existsAfter(
+                /databases/$(database)/documents/posts/$(postId)/likes/$(request.auth.uid)
+              )
+            )
+            ||
+            (
+              request.resource.data.likesCount
+                == resource.data.likesCount - 1
+              && !existsAfter(
+                /databases/$(database)/documents/posts/$(postId)/likes/$(request.auth.uid)
+              )
+            )
+          )
+        )
+      );
+
+      allow delete: if request.auth != null
+        && (
+          resource.data.ownerUid == request.auth.uid
+          || isBoardAdmin()
+        );
+
+      // Likes subcollection
+      match /likes/{userId} {
+        allow read: if request.auth != null;
+
+        allow create: if request.auth != null
+          && request.auth.uid == userId
+          && request.resource.data.keys().hasOnly(['uid', 'createdAt'])
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.createdAt == request.time;
+
+        allow delete: if request.auth != null
+          && (
+            request.auth.uid == userId
+            || get(
+              /databases/$(database)/documents/posts/$(postId)
+            ).data.ownerUid == request.auth.uid
+            || isBoardAdmin()
+          );
+
+        allow update: if false;
+      }
+    }
+
+    // Board comments
+    match /comments/{commentId} {
+      allow read: if request.auth != null;
+
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly([
+          'postId', 'ownerUid', 'nickname', 'text', 'createdAt'
+        ])
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.postId is string
+        && exists(
+          /databases/$(database)/documents/posts/$(request.resource.data.postId)
+        )
+        && request.resource.data.nickname is string
+        && request.resource.data.text is string
+        && request.resource.data.text.size() > 0
+        && request.resource.data.text.size() <= 1000
+        && request.resource.data.createdAt == request.time;
+
+      allow delete: if request.auth != null
+        && (
+          resource.data.ownerUid == request.auth.uid
+          || get(
+            /databases/$(database)/documents/posts/$(resource.data.postId)
+          ).data.ownerUid == request.auth.uid
+          || isBoardAdmin()
+        );
+
+      allow update: if false;
+    }
+  }
+}
