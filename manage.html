@@ -225,6 +225,13 @@ textarea.field {
         font-size:13px;
     }
 }
+
+.member-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:14px}
+.member-card{display:flex;align-items:center;gap:12px;min-width:0;padding:13px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.member-avatar{width:54px;height:54px;flex:0 0 54px;display:grid;place-items:center;overflow:hidden;border-radius:15px;background:var(--soft);font-size:23px;color:var(--p);font-weight:800}
+.member-avatar img{width:100%;height:100%;object-fit:cover}
+.member-info{min-width:0}.member-info strong{display:block;overflow-wrap:anywhere}.member-info p{margin:3px 0 0;color:var(--muted);font-size:12px;overflow-wrap:anywhere}
+
 </style>
     </head>
     <body>
@@ -246,6 +253,13 @@ textarea.field {
             <div class="notice">
                 이 화면은 디자인 확인용 시제품입니다. 실제 권한 검증이나 가입 승인 기능은 아직 연결되어 있지 않습니다.
             </div>
+
+            <section class="card" id="memberProfiles">
+                <div class="row"><div><h2>서버 회원 프로필</h2><p class="muted">마이페이지에서 프로필을 저장한 회원 목록입니다.</p></div><span class="pill" id="memberCount">불러오는 중</span></div>
+                <p class="muted" id="memberStatus" role="status">서버에서 회원 정보를 불러오고 있어요.</p>
+                <div id="memberList" class="member-list"><div class="empty">회원 목록을 불러오는 중이에요.</div></div>
+            </section>
+
             <section class="card">
                 <h2> 가입 신청 관리</h2><p class="muted"> 실제 가입 신청 및 승인 기능은 서버가 필요합니다.</p>
                 <div class="empty">
@@ -259,8 +273,39 @@ textarea.field {
                 <a class="btn alt" href="index.html"> ← 홈으로 돌아가기</a><p> COMMU · 함께 만드는 커뮤니티</p>
             </div>
         </main>
-        <script>
-// 관리진 권한과 가입 승인 기능은 백엔드 연결 후 구현할 수 있습니다.
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,signInAnonymously} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,collection,onSnapshot} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyCad2Z3vp6TCsdIynlR-8WeWTH5FTAu06E",authDomain:"commu-chat-4c35f.firebaseapp.com",projectId:"commu-chat-4c35f",storageBucket:"commu-chat-4c35f.firebasestorage.app",messagingSenderId:"371606149626",appId:"1:371606149626:web:47fdda1440716e54e56c43",measurementId:"G-D71CX7RW30"};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+const list=document.querySelector("#memberList"),count=document.querySelector("#memberCount"),status=document.querySelector("#memberStatus");
+function safe(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]))}
+async function start(){
+ try{
+  await signInAnonymously(auth);
+  onSnapshot(collection(db,"profiles"),snapshot=>{
+   const members=snapshot.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.nickname||"").localeCompare(String(b.nickname||""),"ko"));
+   count.textContent=members.length+"명";
+   status.textContent="프로필 저장 회원 "+members.length+"명의 정보를 실시간으로 표시하고 있어요.";
+   list.innerHTML=members.map(member=>{
+    const image=typeof member.stampData==="string"&&member.stampData.startsWith("data:image/")?'<img src="'+member.stampData+'" alt="">':safe(String(member.nickname||"회원").slice(0,1));
+    return '<article class="member-card"><div class="member-avatar">'+image+'</div><div class="member-info"><strong>'+safe(member.nickname||"이름 없는 회원")+'</strong><p>'+safe(member.bio||"상태 메시지가 없어요.")+'</p></div></article>';
+   }).join("")||'<div class="empty">아직 저장된 회원 프로필이 없어요.</div>';
+  },error=>{
+   console.error("회원 목록 오류:",error);
+   count.textContent="불러오기 실패";
+   status.textContent="회원 목록을 불러오지 못했어요. Firestore의 profiles 읽기 권한을 확인해 주세요.";
+   list.innerHTML='<div class="empty">회원 정보를 불러올 수 없어요.</div>';
+  });
+ }catch(error){
+  console.error(error);count.textContent="연결 실패";status.textContent="Firebase 로그인에 실패했어요.";
+  list.innerHTML='<div class="empty">서버에 연결할 수 없어요.</div>';
+ }
+}
+start();
 </script>
+
     </body>
 </html>
