@@ -250,7 +250,7 @@ textarea.field {
 
 .chat-line.mine{align-self:flex-end;flex-direction:row-reverse}
 .chat-avatar{width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;border-radius:11px;background:#ded8f1;color:#6552b4;font-size:12px;font-weight:800}
-.chat-content{min-width:0}
+.chat-avatar img,.chat-stamp{width:100%;height:100%;object-fit:cover;border-radius:inherit}.chat-content{min-width:0}
 .chat-name{display:block;margin:0 0 4px 3px;color:#777184;font-size:11px}
 .chat-line.mine .chat-name{text-align:right}
 .bubble{max-width:100%;padding:5px 13px;background:#fff;border:0;border-radius:4px 15px 15px 15px;white-space:pre-wrap;line-height:1.35;box-shadow:0 1px 2px #33264a0d}
@@ -299,7 +299,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore, collection, addDoc, query, orderBy, limit,
-  onSnapshot, serverTimestamp, deleteDoc, doc
+  onSnapshot, serverTimestamp, deleteDoc, doc, getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -332,11 +332,26 @@ function showStatus(message, isError = false) {
   statusElement.style.color = isError ? "#c0395b" : "";
 }
 
-function renderMessages(documents) {
+const profileCache = new Map();
+async function getSenderProfile(uid) {
+  if (profileCache.has(uid)) return profileCache.get(uid);
+  try {
+    const snapshot = await getDoc(doc(db, "profiles", uid));
+    const profile = snapshot.exists() ? snapshot.data() : {};
+    profileCache.set(uid, profile);
+    return profile;
+  } catch (error) {
+    console.warn("프로필을 불러오지 못했어요:", uid, error);
+    return {};
+  }
+}
+
+async function renderMessages(documents) {
   const messages = documents.slice().reverse();
   const myUid = auth.currentUser?.uid;
   let previousUid = null;
-  messagesElement.innerHTML = messages.map(documentSnapshot => {
+  const profiles = await Promise.all(messages.map(item => getSenderProfile(String(item.data().ownerUid || ""))));
+  messagesElement.innerHTML = messages.map((documentSnapshot, index) => {
     const message = documentSnapshot.data();
     const senderUid = String(message.ownerUid || "");
     const mine = Boolean(myUid && senderUid && senderUid === myUid);
@@ -347,11 +362,16 @@ function renderMessages(documents) {
       ? message.createdAt.toDate().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })
       : "전송 중";
     const initial = escapeHTML(nickname.slice(0, 1).toUpperCase());
+    const stampData = typeof profiles[index].stampData === "string" && profiles[index].stampData.startsWith("data:image/")
+      ? profiles[index].stampData : "";
+    const avatarMarkup = stampData
+      ? `<img class="chat-stamp" src="${stampData}" alt="">`
+      : initial;
     const deleteButton = mine
       ? `<button class="chat-delete" type="button" data-delete-id="${escapeHTML(documentSnapshot.id)}" aria-label="내 메시지 삭제">삭제</button>`
       : "";
     return `<div class="chat-line ${mine ? "mine" : ""} ${sameAuthor ? "same-author" : ""}">
-      <span class="chat-avatar" aria-hidden="true">${initial}</span>
+      <span class="chat-avatar" aria-hidden="true">${avatarMarkup}</span>
       <div class="chat-content">
         <span class="chat-name">${escapeHTML(nickname)}</span>
         <span class="bubble">${escapeHTML(message.text)}</span>
