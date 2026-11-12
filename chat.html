@@ -240,16 +240,16 @@ textarea.field {
 
 .chat-line{margin-top:2px}
 .chat-line.same-author{margin-top:-9px}
-.chat-line.same-author .chat-avatar,.chat-line.same-author .chat-name{visibility:hidden}
+.chat-line.same-author .chat-avatar,.chat-line.same-author .chat-profile{visibility:hidden}
 .chat-line.same-author .chat-content{padding-top:0}
 .chat-line .bubble{display:inline-block}
 .chat-delete{display:block;margin-top:4px;padding:2px 7px;border:0;border-radius:8px;background:#fff0f1;color:#b94d60;font-size:10px;cursor:pointer}
 .chat-delete:hover{background:#ffe1e5}
 
 .chat-line.mine{align-self:flex-end;flex-direction:row-reverse}
-.chat-avatar{width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;border-radius:11px;background:#ded8f1;color:#6552b4;font-size:12px;font-weight:800}
+.chat-avatar{width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;border-radius:50%;background:#ded8f1;color:#6552b4;font-size:20px;font-weight:800}
 .chat-content{min-width:0}
-.chat-name{display:block;margin:0 0 4px 3px;color:#777184;font-size:11px}
+.chat-profile{display:flex;align-items:center;gap:7px;margin:0 0 5px 2px}.chat-profile-info{min-width:0}.chat-name{display:block;margin:0;color:#655d70;font-size:12px;font-weight:750}.chat-status{display:block;color:#9991a3;font-size:10px;line-height:1.3}
 .chat-line.mine .chat-name{text-align:right}
 .bubble{max-width:100%;padding:10px 13px;background:#fff;border:0;border-radius:4px 15px 15px 15px;white-space:pre-wrap;line-height:1.5;box-shadow:0 1px 2px #33264a0d}
 .chat-line.mine .bubble{background:#d9ccff;border-radius:15px 4px 15px 15px}
@@ -317,6 +317,8 @@ const messagesElement = document.querySelector("#messages");
 const chatForm = document.querySelector("#chatForm");
 const messageInput = document.querySelector("#message");
 const statusElement = document.querySelector("#chatStatus");
+const profiles = {};
+let latestMessages = [];
 
 function escapeHTML(value) {
   return String(value).replace(/[&<>"']/g, character => ({
@@ -334,24 +336,26 @@ function renderMessages(documents) {
   const messages = documents.slice().reverse();
   const myUid = auth.currentUser?.uid;
   let previousUid = null;
-  messagesElement.innerHTML = messages.map(documentSnapshot => {
-    const message = documentSnapshot.data();
+  messagesElement.innerHTML = messages.map(messageDoc => {
+    const message = messageDoc.data();
     const senderUid = String(message.ownerUid || "");
     const mine = Boolean(myUid && senderUid && senderUid === myUid);
     const sameAuthor = senderUid && senderUid === previousUid;
     previousUid = senderUid;
-    const nickname = String(message.nickname || "익명");
+    const profile = profiles[senderUid] || {};
+    const nickname = String(profile.nickname || message.nickname || "익명");
+    const avatar = String(profile.avatar || nickname.slice(0, 1).toUpperCase());
+    const bio = String(profile.bio || "");
     const time = message.createdAt?.toDate
       ? message.createdAt.toDate().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })
       : "전송 중";
-    const initial = escapeHTML(nickname.slice(0, 1).toUpperCase());
     const deleteButton = mine
-      ? `<button class="chat-delete" type="button" data-delete-id="${escapeHTML(documentSnapshot.id)}" aria-label="내 메시지 삭제">삭제</button>`
+      ? `<button class="chat-delete" type="button" data-delete-id="${escapeHTML(messageDoc.id)}" aria-label="내 메시지 삭제">삭제</button>`
       : "";
     return `<div class="chat-line ${mine ? "mine" : ""} ${sameAuthor ? "same-author" : ""}">
-      <span class="chat-avatar" aria-hidden="true">${initial}</span>
+      <span class="chat-avatar" aria-hidden="true">${escapeHTML(avatar)}</span>
       <div class="chat-content">
-        <span class="chat-name">${escapeHTML(nickname)}</span>
+        <div class="chat-profile"><span class="chat-profile-info"><span class="chat-name">${escapeHTML(nickname)}</span>${bio ? `<span class="chat-status">${escapeHTML(bio)}</span>` : ""}</span></div>
         <span class="bubble">${escapeHTML(message.text)}</span>
         ${deleteButton}
       </div>
@@ -360,7 +364,6 @@ function renderMessages(documents) {
   }).join("") || '<div class="chat-empty"><strong>아직 대화가 없어요</strong>첫 메시지를 남겨보세요.</div>';
   messagesElement.scrollTop = messagesElement.scrollHeight;
 }
-
 messagesElement.addEventListener("click", async event => {
   const deleteButton = event.target.closest("[data-delete-id]");
   if (!deleteButton) return;
@@ -382,6 +385,11 @@ async function startChat() {
     showStatus("채팅 서버에 연결하고 있어요...");
     await signInAnonymously(auth);
 
+    onSnapshot(collection(db, "profiles"), snapshot => {
+      snapshot.docs.forEach(profileDoc => { profiles[profileDoc.id] = profileDoc.data(); });
+      renderMessages(latestMessages);
+    }, error => console.error("프로필 불러오기 오류:", error));
+
     const messagesQuery = query(
       collection(db, "messages"),
       orderBy("createdAt", "desc"),
@@ -389,7 +397,8 @@ async function startChat() {
     );
 
     onSnapshot(messagesQuery, snapshot => {
-      renderMessages(snapshot.docs);
+      latestMessages = snapshot.docs;
+      renderMessages(latestMessages);
       showStatus("실시간 채팅에 연결됐어요.");
     }, error => {
       console.error("채팅 불러오기 오류:", error);
