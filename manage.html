@@ -296,8 +296,9 @@ async function start(){
   },error=>{
    console.error("회원 목록 오류:",error);
    count.textContent="불러오기 실패";
-   status.textContent="회원 목록을 불러오지 못했어요. Firestore의 profiles 읽기 권한을 확인해 주세요.";
-   list.innerHTML='<div class="empty">회원 정보를 불러올 수 없어요.</div>';
+   const detail = error?.code ? error.code : (error?.message || "알 수 없는 오류");
+   status.textContent="회원 목록을 불러오지 못했어요. 오류: "+detail;
+   list.innerHTML='<div class="empty">회원 정보를 불러올 수 없어요. 오류 코드를 확인해 주세요.</div>';
   });
  }catch(error){
   console.error(error);count.textContent="연결 실패";status.textContent="Firebase 로그인에 실패했어요.";
