@@ -27,20 +27,6 @@ main{margin:28px auto;padding:0 16px 55px}.eyebrow{font-size:12px;color:var(--p)
 <nav class="nav"><a href="index.html">홈</a><a href="board.html">게시판</a><a href="chat.html">채팅</a><a href="mypage.html" class="active">마이페이지</a><a href="manage.html">관리진</a></nav></div></header>
 <main>
 <div class="page-head"><div class="eyebrow">MY PAGE</div><h1>마이페이지</h1><p class="muted">나를 나타내는 이름과 인장을 설정해 보세요.</p></div>
-<section class="card" id="profileLoginCard">
-<h2>프로필 로그인</h2>
-<p class="muted">닉네임과 숫자 6자리 비밀번호로 다른 기기에서도 같은 프로필을 사용할 수 있어요.</p>
-<label class="field-label" for="loginNickname">로그인 닉네임</label>
-<input class="field" id="loginNickname" maxlength="16" autocomplete="username" placeholder="프로필 닉네임">
-<label class="field-label" for="loginPin">비밀번호 (숫자 6자리)</label>
-<input class="field" id="loginPin" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="current-password" placeholder="숫자 6자리">
-<div class="stamp-actions">
-<button class="btn" id="setupLogin" type="button">현재 프로필에 로그인 정보 설정</button>
-<button class="btn alt" id="loginProfile" type="button">기존 프로필 로그인</button>
-</div>
-<p class="hint">처음 한 번은 현재 기기에서 로그인 정보를 설정하세요. 다른 기기에서는 기존 프로필 로그인을 사용하면 돼요.</p>
-<p id="loginStatus" class="muted" role="status"></p>
-</section>
 <section class="card">
 <h2>내 프로필 설정</h2><p class="muted">설정한 이름과 인장은 채팅방 프로필에도 표시돼요.</p>
 <div class="profile-preview"><div class="profile-preview-avatar" id="previewStamp">🐰</div><div><strong id="previewNickname">새로운 회원</strong><div class="muted" id="previewBio">상태 메시지를 입력해 주세요.</div></div></div>
@@ -50,7 +36,15 @@ main{margin:28px auto;padding:0 16px 55px}.eyebrow{font-size:12px;color:var(--p)
 <input id="stampFile" type="file" accept="image/*" hidden>
 <p class="hint">JPG, PNG, WEBP 사진을 선택할 수 있어요. 저장 공간을 아끼기 위해 사진은 자동으로 작게 조정돼요.</p>
 <label class="field-label" for="bio">상태 메시지</label><input class="field" id="bio" maxlength="40" placeholder="나를 소개하는 한마디를 적어보세요">
-<button class="btn" id="saveProfile" type="button">프로필 저장</button><p id="status" class="muted" role="status"></p>
+<div class="stamp-actions"><button class="btn" id="saveProfile" type="button">프로필 저장</button><button class="btn alt" id="showLogin" type="button">기존 프로필 로그인</button></div>
+<label class="field-label" for="profilePassword">비밀번호 (선택 · 숫자 6자리)</label><input class="field" id="profilePassword" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="new-password" placeholder="다른 기기에서 사용할 비밀번호">
+<p class="hint">비밀번호를 입력하고 프로필을 저장하면 로그인 정보도 함께 설정돼요. 비워두면 프로필만 저장돼요.</p>
+<div id="loginPanel" hidden style="margin-top:14px;padding:16px;background:#f8f6fc;border-radius:14px">
+<strong>기존 프로필 로그인</strong>
+<label class="field-label" for="loginNickname">로그인 닉네임</label><input class="field" id="loginNickname" maxlength="16" autocomplete="username" placeholder="로그인할 때 사용한 닉네임">
+<label class="field-label" for="loginPin">비밀번호</label><input class="field" id="loginPin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="숫자 6자리">
+<button class="btn" id="loginProfile" type="button">로그인</button><p id="loginStatus" class="muted" role="status"></p>
+</div><p id="status" class="muted" role="status"></p>
 </section>
 <div class="footer"><a class="btn alt" href="index.html">← 홈으로 돌아가기</a><p>COMMU · 함께 만드는 커뮤니티</p></div>
 </main>
@@ -68,7 +62,24 @@ $("#removeStamp").addEventListener("click",()=>{stampData="";$("#stampFile").val
 $("#stampFile").addEventListener("change",event=>{const file=event.target.files?.[0];if(!file)return;if(!file.type.startsWith("image/")){$("#status").textContent="이미지 파일을 선택해 주세요.";return}if(file.size>10*1024*1024){$("#status").textContent="10MB 이하의 사진을 선택해 주세요.";return}
 const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const canvas=document.createElement("canvas"),max=320,scale=Math.min(1,max/Math.max(img.width,img.height));canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);stampData=canvas.toDataURL("image/jpeg",0.78);preview();$("#status").textContent="인장을 선택했어요. 프로필 저장을 눌러주세요."};img.onerror=()=>$("#status").textContent="사진을 읽지 못했어요. 다른 이미지를 선택해 주세요.";img.src=reader.result};reader.readAsDataURL(file)});
 async function loadProfile(){try{if(!auth.currentUser)await signInAnonymously(auth);const saved=(await getDoc(doc(db,"profiles",auth.currentUser.uid))).data()||{};$("#nickname").value=saved.nickname||"새로운 회원";$("#bio").value=saved.bio||"";stampData=saved.stampData||"";localStorage.setItem("commu_demo_profile",JSON.stringify({nickname:$("#nickname").value,bio:$("#bio").value,stampData}));preview()}catch(error){console.error(error);const cached=JSON.parse(localStorage.getItem("commu_demo_profile")||"{}");$("#nickname").value=cached.nickname||"새로운 회원";$("#bio").value=cached.bio||"";stampData=cached.stampData||"";preview();$("#status").textContent="서버에서 프로필을 불러오지 못했어요. 연결 상태를 확인해 주세요."}}
-$("#saveProfile").addEventListener("click",async()=>{const nickname=$("#nickname").value.trim(),bio=$("#bio").value.trim();if(nickname.length<2||nickname.length>16){$("#status").textContent="이름은 2~16자로 입력해 주세요.";return}const profile={nickname,bio:bio.slice(0,40),stampData};const button=$("#saveProfile");button.disabled=true;try{if(!auth.currentUser)await signInAnonymously(auth);await setDoc(doc(db,"profiles",auth.currentUser.uid),profile);localStorage.setItem("commu_demo_profile",JSON.stringify(profile));$("#status").textContent="이름과 인장을 저장했어요. 채팅방에서도 사용할 수 있어요."}catch(error){console.error(error);$("#status").textContent="저장에 실패했어요. Firestore 프로필 보안 규칙과 사진 용량을 확인해 주세요."}finally{button.disabled=false}});
+$("#saveProfile").addEventListener("click",async()=>{
+ const nickname=$("#nickname").value.trim(),bio=$("#bio").value.trim(),pin=$("#profilePassword").value;
+ if(nickname.length<2||nickname.length>16){$("#status").textContent="이름은 2~16자로 입력해 주세요.";return}
+ if(pin&&(pin.length!==6||[...pin].some(ch=>ch<"0"||ch>"9"))){$("#status").textContent="비밀번호는 숫자 6자리로 입력해 주세요.";return}
+ const profile={nickname,bio:bio.slice(0,40),stampData},button=$("#saveProfile");button.disabled=true;
+ try{
+  if(!auth.currentUser)await signInAnonymously(auth);
+  if(pin){
+   if(!auth.currentUser.isAnonymous){$("#status").textContent="이미 로그인 정보가 연결된 프로필이에요. 비밀번호 입력란을 비우고 저장해 주세요.";return}
+   const email=await loginEmailForNickname(nickname);
+   await linkWithCredential(auth.currentUser,EmailAuthProvider.credential(email,pin));
+  }
+  await setDoc(doc(db,"profiles",auth.currentUser.uid),profile);
+  localStorage.setItem("commu_demo_profile",JSON.stringify(profile));$("#profilePassword").value="";
+  $("#status").textContent=pin?"프로필과 로그인 정보를 저장했어요! 다른 기기에서 같은 닉네임과 비밀번호로 로그인할 수 있어요.":"프로필을 저장했어요. 채팅방에서도 사용할 수 있어요.";
+ }catch(error){console.error(error);$("#status").textContent=error.code==="auth/email-already-in-use"?"이미 로그인에 사용 중인 닉네임이에요. 다른 닉네임을 사용해 주세요.":error.code==="auth/operation-not-allowed"?"Firebase에서 이메일/비밀번호 로그인을 활성화해 주세요.":"저장 실패: "+(error.code||error.message)}
+ finally{button.disabled=false}
+});
 
 async function loginEmailForNickname(nickname){
  const normalized=nickname.trim().normalize("NFKC").toLocaleLowerCase("ko-KR");
@@ -83,29 +94,13 @@ function loginInputs(){
  if(pin.length!==6||[...pin].some(ch=>ch<"0"||ch>"9")){$("#loginStatus").textContent="비밀번호는 숫자 6자리로 입력해 주세요.";return null}
  return {nickname,pin};
 }
-$("#setupLogin").addEventListener("click",async()=>{
- const data=loginInputs();if(!data)return;
- const button=$("#setupLogin");button.disabled=true;$("#loginStatus").textContent="현재 프로필에 로그인 정보를 연결하고 있어요...";
- try{
-  if(!auth.currentUser)await signInAnonymously(auth);
-  if(!auth.currentUser.isAnonymous){$("#loginStatus").textContent="이미 로그인 정보가 연결된 프로필이에요.";return}
-  const email=await loginEmailForNickname(data.nickname);
-  const credential=EmailAuthProvider.credential(email,data.pin);
-  await linkWithCredential(auth.currentUser,credential);
-  $("#loginStatus").textContent="로그인 정보 설정 완료! 다른 기기에서 같은 닉네임과 비밀번호로 로그인할 수 있어요.";
-  $("#loginNickname").value=data.nickname;$("#loginPin").value="";
- }catch(error){
-  console.error(error);
-  $("#loginStatus").textContent=error.code==="auth/email-already-in-use"?"이미 사용 중인 닉네임이에요. 다른 닉네임을 선택해 주세요.":error.code==="auth/weak-password"?"비밀번호를 확인해 주세요.":error.code==="auth/operation-not-allowed"?"Firebase 콘솔에서 이메일/비밀번호 로그인을 먼저 활성화해야 해요.": "설정 실패: "+(error.code||error.message);
- }finally{button.disabled=false}
-});
+$("#showLogin").addEventListener("click",()=>{const panel=$("#loginPanel");panel.hidden=!panel.hidden;$("#loginStatus").textContent="";});
 $("#loginProfile").addEventListener("click",async()=>{
  const data=loginInputs();if(!data)return;
  const button=$("#loginProfile");button.disabled=true;$("#loginStatus").textContent="프로필을 확인하고 있어요...";
  try{
   const email=await loginEmailForNickname(data.nickname);
   await signInWithEmailAndPassword(auth,email,data.pin);
-  $("#nickname").value=data.nickname;
   const saved=(await getDoc(doc(db,"profiles",auth.currentUser.uid))).data()||{};
   $("#nickname").value=saved.nickname||data.nickname;$("#bio").value=saved.bio||"";stampData=saved.stampData||"";
   localStorage.setItem("commu_demo_profile",JSON.stringify({nickname:$("#nickname").value,bio:$("#bio").value,stampData}));
