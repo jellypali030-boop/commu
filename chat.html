@@ -1,444 +1,213 @@
 <!doctype html>
 <html lang="ko">
-    <head>
-        <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title> 채팅 · COMMU</title>
-        <style>
-:root {
-    --bg:#f7f5fb;
-    --ink:#29243b;
-    --muted:#827d91;
-    --line:#ece8f2;
-    --p:#7862cf;
-    --soft:#f0ecfb;
-}
-* {
-    box-sizing:border-box;
-}
-body {
-    margin:0;
-    background:var(--bg);
-    color:var(--ink);
-    font:15px system-ui,'Malgun Gothic',sans-serif;
-    line-height:1.65;
-}
-button,input,textarea {
-    font:inherit;
-}
-a {
-    color:inherit;
-}
-header {
-    background:linear-gradient(115deg,#7560c9,#b18bda 60%,#e8a8c8);
-    color:white;
-    padding:22px 18px;
-}
-.top {
-    max-width:1000px;
-    margin:auto;
-}
-.brand {
-    font-size:26px;
-    font-weight:850;
-    letter-spacing:2px;
-    text-decoration:none;
-}
-.tag {
-    font-size:13px;
-    margin:2px 0 0;
-}
-.nav {
-    display:flex;
-    gap:6px;
-    overflow:auto;
-    margin-top:16px;
-}
-.nav a {
-    display:block;
-    text-decoration:none;
-    color:white;
-    padding:9px 13px;
-    border-radius:10px;
-    white-space:nowrap;
-}
-.nav a.active,.nav a:hover {
-    background:#fff;
-    color:var(--p);
-}
-main {
-    max-width:1000px;
-    margin:28px auto;
-    padding:0 16px 55px;
-}
-.eyebrow {
-    font-size:12px;
-    color:var(--p);
-    font-weight:800;
-    letter-spacing:1.4px;
-}
-.page-head {
-    margin-bottom:18px;
-}
-.page-head h1 {
-    font-size:clamp(27px,4vw,36px);
-    line-height:1.25;
-    margin:6px 0;
-}
-.muted {
-    font-size:13px;
-    color:var(--muted);
-}
-.card {
-    background:white;
-    border:1px solid var(--line);
-    border-radius:18px;
-    padding:22px;
-    margin-bottom:16px;
-    box-shadow:0 10px 30px #39245b0b;
-}
-.grid {
-    display:grid;
-    grid-template-columns:1.5fr .8fr;
-    gap:16px;
-}
-.row {
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-}
-.btn {
-    display:inline-block;
-    border:0;
-    border-radius:10px;
-    padding:10px 15px;
-    background:var(--p);
-    color:white;
-    text-decoration:none;
-    font-weight:700;
-    cursor:pointer;
-}
-.btn.alt {
-    background:var(--soft);
-    color:var(--p);
-}
-.field {
-    width:100%;
-    padding:12px;
-    border:1px solid var(--line);
-    border-radius:10px;
-    margin:7px 0 12px;
-    outline-color:#a998ed;
-}
-textarea.field {
-    min-height:110px;
-    resize:vertical;
-}
-.notice {
-    padding:12px;
-    background:#fff8e9;
-    border:1px solid #f3e5c6;
-    color:#85652a;
-    border-radius:10px;
-    font-size:13px;
-    margin:12px 0;
-}
-.post {
-    padding:16px 0;
-    border-bottom:1px solid var(--line);
-}
-.post p {
-    white-space:pre-wrap;
-    overflow-wrap:anywhere;
-}
-.meta {
-    font-size:12px;
-    color:var(--muted);
-}
-.empty {
-    text-align:center;
-    padding:25px;
-    color:var(--muted);
-}
-.chatbox {
-    height:360px;
-    overflow:auto;
-    background:#faf9fc;
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:12px;
-    margin:12px 0;
-}
-.bubble {
-    padding:9px 12px;
-    margin:8px 0;
-    background:white;
-    border:1px solid var(--line);
-    border-radius:12px;
-    overflow-wrap:anywhere;
-}
-.bubble.mine {
-    margin-left:auto;
-    background:var(--soft);
-    max-width:85%;
-}
-.bubble small {
-    display:block;
-    color:var(--muted);
-    font-size:11px;
-}
-.pill {
-    font-size:11px;
-    color:var(--p);
-    background:var(--soft);
-    padding:3px 8px;
-    border-radius:20px;
-}
-.role-icon {
-    display:inline-flex;
-    align-items:center;
-    vertical-align:-3px;
-    margin-left:4px;
-}
-.role-icon img {
-    width:26px;
-    height:26px;
-    object-fit:contain;
-}
-.footer {
-    text-align:center;
-    color:var(--muted);
-    font-size:12px;
-    padding:20px;
-}
-@media(max-width:700px) {
-    .grid {
-        grid-template-columns:1fr;
-    }
-    .card {
-        padding:17px;
-    }
-    .nav {
-        gap:2px;
-    }
-    .nav a {
-        padding:8px 10px;
-        font-size:13px;
-    }
-}
-
-/* 채팅방 UI */
-.chat-room-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px;background:#fff;border:1px solid var(--line);border-radius:16px 16px 0 0}
-.chat-room-title{display:flex;align-items:center;gap:10px;min-width:0}
-.chat-room-avatar{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(135deg,#7964d2,#c09be8);color:#fff;font-weight:800;font-size:18px}
-.chat-room-title strong{display:block;font-size:15px}
-.chat-room-title small{display:block;color:var(--muted);font-size:12px}
-.chat-live{display:flex;align-items:center;gap:6px;color:#4d9b70;font-size:12px;white-space:nowrap}
-.chat-live:before{content:"";width:7px;height:7px;border-radius:50%;background:#54bd82}
-#chatStatus{margin:0;padding:9px 14px;background:#fff;border-left:1px solid var(--line);border-right:1px solid var(--line);font-size:12px}
-.chatbox{height:min(58vh,520px);min-height:300px;overflow-y:auto;background:#f5f2eb;border:1px solid var(--line);border-top:0;border-radius:0;padding:18px 14px;margin:0;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
-.chat-line{display:flex;align-items:flex-end;gap:7px;max-width:86%;align-self:flex-start}
-
-.chat-line{margin-top:2px}
-.chat-line.same-author{margin-top:-9px}
-.chat-line.same-author .chat-avatar,.chat-line.same-author .chat-profile{visibility:hidden}
-.chat-line.same-author .chat-content{padding-top:0}
-.chat-line .bubble{display:inline-block}
-.chat-delete{display:block;margin-top:4px;padding:2px 7px;border:0;border-radius:8px;background:#fff0f1;color:#b94d60;font-size:10px;cursor:pointer}
-.chat-delete:hover{background:#ffe1e5}
-
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>채팅 · COMMU</title>
+<style>
+:root{--bg:#f7f5fb;--ink:#29243b;--muted:#827d91;--line:#ece8f2;--primary:#7862cf;--soft:#f0ecfb}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,'Malgun Gothic',sans-serif}
+button,input{font:inherit}
+header{padding:22px 18px;background:linear-gradient(115deg,#7560c9,#b18bda 60%,#e8a8c8);color:#fff}
+.top,main{max-width:900px;margin:auto}
+.brand{color:#fff;text-decoration:none;font-size:26px;font-weight:850;letter-spacing:2px}
+.tag{margin:2px 0 0;font-size:13px}
+.nav{display:flex;gap:6px;overflow:auto;margin-top:16px}
+.nav a{padding:8px 12px;border-radius:10px;color:#fff;text-decoration:none;white-space:nowrap}
+.nav a.active,.nav a:hover{background:#fff;color:var(--primary)}
+main{padding:28px 16px 50px}
+.eyebrow{color:var(--primary);font-size:12px;font-weight:800;letter-spacing:1.4px}
+h1{margin:6px 0;font-size:clamp(27px,4vw,36px)}
+.muted{color:var(--muted);font-size:13px}
+.card{overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 30px #39245b0b}
+.room-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px}
+.room-title{display:flex;align-items:center;gap:10px}
+.room-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:15px;background:linear-gradient(135deg,#7964d2,#c09be8);color:white;font-weight:800}
+.room-title strong,.room-title small{display:block}
+.room-title small{color:var(--muted);font-size:12px}
+.live{color:#4d9b70;font-size:12px;white-space:nowrap}
+.live:before{content:"";display:inline-block;width:7px;height:7px;margin-right:6px;border-radius:50%;background:#54bd82}
+#chatStatus{margin:0;padding:8px 16px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:12px;color:var(--muted)}
+.chatbox{height:min(60vh,560px);min-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:18px 14px;background:#f5f2eb;scroll-behavior:smooth}
+.chat-line{display:flex;align-items:flex-end;gap:8px;max-width:88%;align-self:flex-start}
 .chat-line.mine{align-self:flex-end;flex-direction:row-reverse}
-.chat-avatar{width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;border-radius:50%;background:#ded8f1;color:#6552b4;font-size:20px;font-weight:800}
+.chat-avatar{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:50%;background:#e6defb;font-size:21px}
 .chat-content{min-width:0}
-.chat-profile{display:flex;align-items:center;gap:7px;margin:0 0 5px 2px}.chat-profile-info{min-width:0}.chat-name{display:block;margin:0;color:#655d70;font-size:12px;font-weight:750}.chat-status{display:block;color:#9991a3;font-size:10px;line-height:1.3}
-.chat-line.mine .chat-name{text-align:right}
-.bubble{max-width:100%;padding:10px 13px;background:#fff;border:0;border-radius:4px 15px 15px 15px;white-space:pre-wrap;line-height:1.5;box-shadow:0 1px 2px #33264a0d}
+.chat-profile{display:flex;align-items:center;gap:7px;margin:0 0 5px 2px}
+.chat-name{display:block;color:#655d70;font-size:12px;font-weight:750}
+.chat-bio{display:block;color:#9991a3;font-size:10px;line-height:1.3}
+.chat-line.mine .chat-profile{justify-content:flex-end;text-align:right}
+.bubble{display:inline-block;max-width:100%;padding:10px 13px;background:#fff;border-radius:4px 15px 15px 15px;overflow-wrap:anywhere;white-space:pre-wrap;line-height:1.5;box-shadow:0 1px 2px #33264a0d}
 .chat-line.mine .bubble{background:#d9ccff;border-radius:15px 4px 15px 15px}
-.chat-time{display:inline-block;margin:0 4px 2px;color:#8b8494;font-size:10px;white-space:nowrap}
-.chat-composer{display:flex;align-items:center;gap:8px;padding:12px;background:#fff;border:1px solid var(--line);border-top:0;border-radius:0 0 16px 16px}
-.chat-composer .field{flex:1;min-width:0;margin:0;border:1px solid #e8e3ef;border-radius:22px;padding:11px 16px;background:#f8f7fa}
-.chat-composer .btn{flex:0 0 auto;border-radius:22px;padding:11px 19px}
+.chat-time{margin:0 4px 2px;color:#8b8494;font-size:10px;white-space:nowrap}
+.chat-delete{display:block;margin-top:4px;padding:3px 8px;border:0;border-radius:8px;background:#fff0f1;color:#b94d60;font-size:10px;cursor:pointer}
+.chat-delete:disabled{opacity:.5}
+.same-author{margin-top:-8px}
+.same-author .chat-avatar,.same-author .chat-profile{visibility:hidden}
+.same-author .chat-content{padding-top:0}
 .chat-empty{margin:auto;text-align:center;color:#898394;font-size:13px;padding:24px}
 .chat-empty strong{display:block;color:#625a70;font-size:15px;margin-bottom:5px}
-@media(max-width:600px){.chat-room-head{padding:12px}.chatbox{height:55vh;min-height:280px;padding:14px 10px}.chat-line{max-width:92%}.chat-composer{padding:9px}.chat-composer .btn{padding:10px 14px}}
-
+.composer{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
+.composer input{flex:1;min-width:0;padding:11px 16px;border:1px solid #e8e3ef;border-radius:22px;background:#f8f7fa;outline-color:#a998ed}
+.btn{border:0;border-radius:22px;padding:10px 19px;background:var(--primary);color:#fff;font-weight:700;cursor:pointer}
+.btn:disabled{opacity:.55;cursor:wait}
+.footer{text-align:center;padding:22px;color:var(--muted);font-size:12px}
+.footer a{color:var(--primary)}
+@media(max-width:600px){header{padding:18px 14px}.nav{gap:2px}.nav a{padding:8px 9px;font-size:13px}main{padding:22px 12px 40px}.chatbox{height:56vh;min-height:280px;padding:14px 9px}.chat-line{max-width:94%}.composer{padding:9px}.btn{padding:10px 14px}}
 </style>
-    </head>
-    <body>
-        <header>
-            <div class="top">
-                <a class="brand" href="index.html"> COMMU</a><p class="tag"> 관심사를 나누고, 함께 만드는 우리들의 공간</p>
-                <nav class="nav">
-                    <a href="index.html"> 홈</a><a href="board.html" > 게시판</a><a href="chat.html" class="active" aria-current="page"> 채팅</a><a href="mypage.html" > 마이페이지</a><a href="manage.html" > 관리진</a>
-                </nav>
-            </div>
-        </header>
-        <main>
-            <div class="page-head">
-                <div class="eyebrow">
-                    LIVE TALK
-                </div>
-                <h1> 채팅</h1><p class="muted"> COMMU 안의 독립된 채팅 페이지입니다.</p>
-            </div>
-            <section class="card">
-                <div class="chat-room-head"><div class="chat-room-title"><span class="chat-room-avatar">C</span><div><strong>COMMU 라운지</strong><small>모두와 자유롭게 이야기해요</small></div></div><span class="chat-live">실시간 채팅</span></div>
-                <p id="chatStatus" role="status">채팅 서버에 연결하고 있어요...</p>
-                <div class="chatbox" id="messages" aria-live="polite"><div class="chat-empty"><strong>COMMU 라운지에 오신 걸 환영해요!</strong>첫 메시지로 대화를 시작해 보세요.</div></div>
-                <form id="chatForm" class="chat-composer">
-                    <input class="field" id="message" maxlength="300" placeholder="메시지를 입력해 주세요" aria-label="메시지 입력" required><button class="btn" type="submit">전송</button>
-                </form>
-            </section>
-            <div class="footer">
-                <a class="btn alt" href="index.html"> ← 홈으로 돌아가기</a><p> COMMU · 함께 만드는 커뮤니티</p>
-            </div>
-        </main>
-        
+</head>
+<body>
+<header><div class="top">
+<a class="brand" href="index.html">COMMU</a>
+<p class="tag">관심사를 나누고, 함께 만드는 우리들의 공간</p>
+<nav class="nav" aria-label="주요 메뉴">
+<a href="index.html">홈</a><a href="board.html">게시판</a><a class="active" href="chat.html" aria-current="page">채팅</a><a href="mypage.html">마이페이지</a><a href="manage.html">관리진</a>
+</nav></div></header>
+<main>
+<div class="page-head"><div class="eyebrow">LIVE TALK</div><h1>채팅</h1><p class="muted">COMMU 회원들과 실시간으로 이야기해 보세요.</p></div>
+<section class="card" aria-label="COMMU 실시간 채팅">
+<div class="room-head"><div class="room-title"><span class="room-icon">C</span><div><strong>COMMU 라운지</strong><small>모두와 자유롭게 이야기해요</small></div></div><span class="live">실시간 채팅</span></div>
+<p id="chatStatus" role="status">채팅 서버에 연결하고 있어요...</p>
+<div class="chatbox" id="messages" aria-live="polite"><div class="chat-empty"><strong>COMMU 라운지에 오신 걸 환영해요!</strong>첫 메시지로 대화를 시작해 보세요.</div></div>
+<form class="composer" id="chatForm"><input id="message" maxlength="300" autocomplete="off" placeholder="메시지를 입력해 주세요" aria-label="메시지 입력" required><button class="btn" type="submit">전송</button></form>
+</section>
+<div class="footer"><a href="index.html">← 홈으로 돌아가기</a><p>COMMU · 함께 만드는 커뮤니티</p></div>
+</main>
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {
-  getFirestore, collection, addDoc, query, orderBy, limit,
-  onSnapshot, serverTimestamp, deleteDoc, doc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,signInAnonymously} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,collection,addDoc,query,orderBy,limit,onSnapshot,serverTimestamp,deleteDoc,doc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCad2Z3vp6TCsdIynlR-8WeWTH5FTAu06E",
-  authDomain: "commu-chat-4c35f.firebaseapp.com",
-  projectId: "commu-chat-4c35f",
-  storageBucket: "commu-chat-4c35f.firebasestorage.app",
-  messagingSenderId: "371606149626",
-  appId: "1:371606149626:web:47fdda1440716e54e56c43",
-  measurementId: "G-D71CX7RW30"
+const firebaseConfig={
+ apiKey:"AIzaSyCad2Z3vp6TCsdIynl-8WeWTH5FTAu06E",
+ authDomain:"commu-chat-4c35f.firebaseapp.com",
+ projectId:"commu-chat-4c35f",
+ storageBucket:"commu-chat-4c35f.firebasestorage.app",
+ messagingSenderId:"371606149626",
+ appId:"1:371606149626:web:47fdda1440716e54e56c43",
+ measurementId:"G-D71CX7RW30"
 };
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+const messagesEl=document.querySelector("#messages");
+const form=document.querySelector("#chatForm");
+const input=document.querySelector("#message");
+const statusEl=document.querySelector("#chatStatus");
+const profiles=new Map();
+let messages=[];
+let profileListenerStarted=false;
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const messagesElement = document.querySelector("#messages");
-const chatForm = document.querySelector("#chatForm");
-const messageInput = document.querySelector("#message");
-const statusElement = document.querySelector("#chatStatus");
-const profiles = {};
-let latestMessages = [];
-
-function escapeHTML(value) {
-  return String(value).replace(/[&<>"']/g, character => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-  })[character]);
+function escapeHTML(value){
+ return String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
 }
-
-function showStatus(message, isError = false) {
-  if (!statusElement) return;
-  statusElement.textContent = message;
-  statusElement.style.color = isError ? "#c0395b" : "";
+function setStatus(message,isError=false){
+ statusEl.textContent=message;
+ statusEl.style.color=isError?"#c0395b":"";
 }
-
-function renderMessages(documents) {
-  const messages = documents.slice().reverse();
-  const myUid = auth.currentUser?.uid;
-  let previousUid = null;
-  messagesElement.innerHTML = messages.map(messageDoc => {
-    const message = messageDoc.data();
-    const senderUid = String(message.ownerUid || "");
-    const mine = Boolean(myUid && senderUid && senderUid === myUid);
-    const sameAuthor = senderUid && senderUid === previousUid;
-    previousUid = senderUid;
-    const profile = profiles[senderUid] || {};
-    const nickname = String(profile.nickname || message.nickname || "익명");
-    const avatar = String(profile.avatar || nickname.slice(0, 1).toUpperCase());
-    const bio = String(profile.bio || "");
-    const time = message.createdAt?.toDate
-      ? message.createdAt.toDate().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })
-      : "전송 중";
-    const deleteButton = mine
-      ? `<button class="chat-delete" type="button" data-delete-id="${escapeHTML(messageDoc.id)}" aria-label="내 메시지 삭제">삭제</button>`
-      : "";
-    return `<div class="chat-line ${mine ? "mine" : ""} ${sameAuthor ? "same-author" : ""}">
-      <span class="chat-avatar" aria-hidden="true">${escapeHTML(avatar)}</span>
-      <div class="chat-content">
-        <div class="chat-profile"><span class="chat-profile-info"><span class="chat-name">${escapeHTML(nickname)}</span>${bio ? `<span class="chat-status">${escapeHTML(bio)}</span>` : ""}</span></div>
-        <span class="bubble">${escapeHTML(message.text)}</span>
-        ${deleteButton}
-      </div>
-      <time class="chat-time">${escapeHTML(time)}</time>
-    </div>`;
-  }).join("") || '<div class="chat-empty"><strong>아직 대화가 없어요</strong>첫 메시지를 남겨보세요.</div>';
-  messagesElement.scrollTop = messagesElement.scrollHeight;
+function renderMessages(){
+ const myUid=auth.currentUser?.uid;
+ let previousUid=null;
+ const html=messages.map(item=>{
+  const data=item.data();
+  const uid=String(data.ownerUid||"");
+  const mine=Boolean(myUid&&uid===myUid);
+  const sameAuthor=Boolean(uid&&uid===previousUid);
+  previousUid=uid;
+  const profile=profiles.get(uid)||{};
+  const nickname=profile.nickname||data.nickname||"익명";
+  const avatar=profile.avatar||"🙂";
+  const bio=profile.bio||"";
+  const time=data.createdAt?.toDate
+   ?data.createdAt.toDate().toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"})
+   :"전송 중";
+  const deleteButton=mine
+   ?'<button class="chat-delete" type="button" data-delete-id="'+escapeHTML(item.id)+'">삭제</button>'
+   :"";
+  return '<article class="chat-line '+(mine?"mine ":"")+(sameAuthor?"same-author":"")+'">'+
+   '<span class="chat-avatar" aria-hidden="true">'+escapeHTML(avatar)+'</span>'+
+   '<div class="chat-content"><div class="chat-profile"><div><span class="chat-name">'+escapeHTML(nickname)+'</span>'+
+   (bio?'<span class="chat-bio">'+escapeHTML(bio)+'</span>':"")+
+   '</div></div><div class="bubble">'+escapeHTML(data.text)+'</div>'+deleteButton+'</div>'+
+   '<time class="chat-time">'+escapeHTML(time)+'</time></article>';
+ }).join("");
+ messagesEl.innerHTML=html||'<div class="chat-empty"><strong>아직 대화가 없어요</strong>첫 메시지를 남겨보세요.</div>';
+ messagesEl.scrollTop=messagesEl.scrollHeight;
 }
-messagesElement.addEventListener("click", async event => {
-  const deleteButton = event.target.closest("[data-delete-id]");
-  if (!deleteButton) return;
-  const messageId = deleteButton.dataset.deleteId;
-  if (!messageId || !auth.currentUser) return;
-  if (!confirm("이 메시지를 삭제할까요?")) return;
-  deleteButton.disabled = true;
-  try {
-    await deleteDoc(doc(db, "messages", messageId));
-  } catch (error) {
-    console.error("메시지 삭제 오류:", error);
-    showStatus("메시지 삭제에 실패했어요. Firestore 보안 규칙을 확인해 주세요.", true);
-    deleteButton.disabled = false;
-  }
+messagesEl.addEventListener("click",async event=>{
+ const button=event.target.closest("[data-delete-id]");
+ if(!button)return;
+ const messageId=button.dataset.deleteId;
+ if(!auth.currentUser||!messageId)return;
+ if(!confirm("이 메시지를 삭제할까요?"))return;
+ button.disabled=true;
+ try{
+  await deleteDoc(doc(db,"messages",messageId));
+ }catch(error){
+  console.error("메시지 삭제 오류:",error);
+  setStatus("삭제하지 못했어요. Firestore 보안 규칙을 확인해 주세요.",true);
+  button.disabled=false;
+ }
 });
-
-async function startChat() {
-  try {
-    showStatus("채팅 서버에 연결하고 있어요...");
-    await signInAnonymously(auth);
-
-    onSnapshot(collection(db, "profiles"), snapshot => {
-      snapshot.docs.forEach(profileDoc => { profiles[profileDoc.id] = profileDoc.data(); });
-      renderMessages(latestMessages);
-    }, error => console.error("프로필 불러오기 오류:", error));
-
-    const messagesQuery = query(
-      collection(db, "messages"),
-      orderBy("createdAt", "desc"),
-      limit(100)
-    );
-
-    onSnapshot(messagesQuery, snapshot => {
-      latestMessages = snapshot.docs;
-      renderMessages(latestMessages);
-      showStatus("실시간 채팅에 연결됐어요.");
-    }, error => {
-      console.error("채팅 불러오기 오류:", error);
-      showStatus("채팅을 불러오지 못했어요. Firebase 규칙과 연결 상태를 확인해 주세요.", true);
-    });
-  } catch (error) {
-    console.error("Firebase 연결 오류:", error);
-    showStatus("로그인 또는 서버 연결에 실패했어요. Firebase 익명 로그인이 켜져 있는지 확인해 주세요.", true);
+async function startChat(){
+ try{
+  setStatus("채팅 서버에 연결하고 있어요...");
+  await signInAnonymously(auth);
+  if(!profileListenerStarted){
+   profileListenerStarted=true;
+   onSnapshot(collection(db,"profiles"),snapshot=>{
+    profiles.clear();
+    snapshot.forEach(item=>profiles.set(item.id,item.data()));
+    renderMessages();
+   },error=>{
+    console.error("프로필 불러오기 오류:",error);
+    setStatus("프로필을 불러오지 못했어요. Firestore profiles 규칙을 확인해 주세요.",true);
+   });
   }
+  const messageQuery=query(collection(db,"messages"),orderBy("createdAt","desc"),limit(100));
+  onSnapshot(messageQuery,snapshot=>{
+   messages=snapshot.docs.slice().reverse();
+   renderMessages();
+   setStatus("실시간 채팅에 연결됐어요.");
+  },error=>{
+   console.error("채팅 불러오기 오류:",error);
+   setStatus("채팅을 불러오지 못했어요. Firebase 연결과 보안 규칙을 확인해 주세요.",true);
+  });
+ }catch(error){
+  console.error("Firebase 연결 오류:",error);
+  setStatus("로그인에 실패했어요. Firebase 익명 로그인이 켜져 있는지 확인해 주세요.",true);
+ }
 }
-
-chatForm.addEventListener("submit", async event => {
-  event.preventDefault();
-  const text = messageInput.value.trim();
-  if (!text) return;
-
-  const profile = JSON.parse(localStorage.getItem("commu_demo_profile") || '{"nickname":"새로운 회원"}');
-  const nickname = String(profile.nickname || "새로운 회원").trim().slice(0, 20);
-  const submitButton = chatForm.querySelector("button");
-  submitButton.disabled = true;
-
-  try {
-    await addDoc(collection(db, "messages"), {
-      ownerUid: auth.currentUser.uid,
-      nickname,
-      text: text.slice(0, 300),
-      createdAt: serverTimestamp()
-    });
-    messageInput.value = "";
-    showStatus("메시지를 전송했어요.");
-  } catch (error) {
-    console.error("메시지 전송 오류:", error);
-    showStatus("메시지 전송에 실패했어요. 잠시 후 다시 시도해 주세요.", true);
-  } finally {
-    submitButton.disabled = false;
-    messageInput.focus();
-  }
+form.addEventListener("submit",async event=>{
+ event.preventDefault();
+ const text=input.value.trim();
+ if(!text)return;
+ if(!auth.currentUser){setStatus("서버에 연결 중이에요. 잠시만 기다려 주세요.");return;}
+ const submit=form.querySelector("button");
+ submit.disabled=true;
+ try{
+  const saved=profiles.get(auth.currentUser.uid)||{};
+  let localProfile={};
+  try{localProfile=JSON.parse(localStorage.getItem("commu_demo_profile")||"{}");}catch{}
+  const nickname=String(saved.nickname||localProfile.nickname||"새로운 회원").trim().slice(0,20);
+  await addDoc(collection(db,"messages"),{
+   ownerUid:auth.currentUser.uid,
+   nickname,
+   text:text.slice(0,300),
+   createdAt:serverTimestamp()
+  });
+  input.value="";
+  setStatus("메시지를 전송했어요.");
+ }catch(error){
+  console.error("메시지 전송 오류:",error);
+  setStatus("전송에 실패했어요. Firestore messages 규칙을 확인해 주세요.",true);
+ }finally{
+  submit.disabled=false;
+  input.focus();
+ }
 });
-
 startChat();
 </script>
-    </body>
+</body>
 </html>
