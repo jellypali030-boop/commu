@@ -663,7 +663,7 @@ deleteSelectedButton.addEventListener("click", async () => {
 async function startChat() {
   try {
     showStatus("채팅 서버에 연결하고 있어요...");
-    await signInAnonymously(auth);
+    if(!auth.currentUser) await signInAnonymously(auth);
 
     const messagesQuery = query(
       collection(db, "messages"),
