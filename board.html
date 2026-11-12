@@ -46,6 +46,19 @@ body.detail-mode #detailContent h2{font-size:24px;line-height:1.4;margin:12px 0}
 body.detail-mode .detail-body{font-size:16px;line-height:1.8}
 body.detail-mode .detail-image{width:auto;max-width:100%;max-height:60vh}
 @media(max-width:700px){.post{padding:14px;margin:10px 0;border-radius:14px}.post-content{grid-template-columns:minmax(0,1fr) 104px;gap:10px}.post-title{font-size:17px}.post-preview{font-size:14px;line-height:1.55;-webkit-line-clamp:3;margin:6px 0}.post-thumb{width:104px;height:104px;max-height:104px;border-radius:10px}.post-meta{font-size:11px}.post-stats{margin-top:6px;gap:16px}.post-stat{font-size:13px}.latest-comment{font-size:12px}body.detail-mode #detailCard{padding:12px 16px}body.detail-mode #detailCard>.row:first-child{top:-12px;margin-bottom:14px}body.detail-mode #detailContent h2{font-size:21px}}
+
+/* Keep editor actions on one horizontal line */
+#postForm .row>.actions{display:flex;flex-wrap:nowrap;align-items:center;gap:8px;white-space:nowrap}
+#postForm .row>.actions .btn{flex:0 0 auto;padding:10px 13px}
+#postForm .row>.actions #noticeOption{white-space:nowrap}
+@media(max-width:420px){#postForm .row>.actions{gap:6px}#postForm .row>.actions .btn{padding:9px 10px;font-size:13px}}
+/* Readable full-screen comments */
+body.detail-mode #comments .comment{padding:18px 0}
+body.detail-mode #comments .comment strong{font-size:17px}
+body.detail-mode #comments .comment p{font-size:16px;line-height:1.8;margin:9px 0}
+body.detail-mode #comments .comment .meta{font-size:13px}
+body.detail-mode #commentCount{font-size:15px}
+body.detail-mode #commentForm textarea{font-size:16px;min-height:110px}
 </style>
 </head>
 <body>
