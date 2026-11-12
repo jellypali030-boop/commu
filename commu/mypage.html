@@ -1,616 +1,163 @@
 <!doctype html>
 <html lang="ko">
-    <head>
-        <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title> 마이페이지 · COMMU</title>
-        <style>
-:root {
-    --bg:#f7f5fb;
-    --ink:#29243b;
-    --muted:#827d91;
-    --line:#ece8f2;
-    --p:#7862cf;
-    --soft:#f0ecfb;
-}
-* {
-    box-sizing:border-box;
-}
-body {
-    margin:0;
-    background:var(--bg);
-    color:var(--ink);
-    font:15px system-ui,'Malgun Gothic',sans-serif;
-    line-height:1.65;
-}
-button,input,textarea {
-    font:inherit;
-}
-a {
-    color:inherit;
-}
-header {
-    background:linear-gradient(115deg,#7560c9,#b18bda 60%,#e8a8c8);
-    color:white;
-    padding:22px 18px;
-}
-.top {
-    max-width:1000px;
-    margin:auto;
-}
-.brand {
-    font-size:26px;
-    font-weight:850;
-    letter-spacing:2px;
-    text-decoration:none;
-}
-.tag {
-    font-size:13px;
-    margin:2px 0 0;
-}
-.nav {
-    display:flex;
-    gap:6px;
-    overflow:auto;
-    margin-top:16px;
-}
-.nav a {
-    display:block;
-    text-decoration:none;
-    color:white;
-    padding:9px 13px;
-    border-radius:10px;
-    white-space:nowrap;
-}
-.nav a.active,.nav a:hover {
-    background:#fff;
-    color:var(--p);
-}
-main {
-    max-width:1000px;
-    margin:28px auto;
-    padding:0 16px 55px;
-}
-.eyebrow {
-    font-size:12px;
-    color:var(--p);
-    font-weight:800;
-    letter-spacing:1.4px;
-}
-.page-head {
-    margin-bottom:18px;
-}
-.page-head h1 {
-    font-size:clamp(27px,4vw,36px);
-    line-height:1.25;
-    margin:6px 0;
-}
-.muted {
-    font-size:13px;
-    color:var(--muted);
-}
-.card {
-    background:white;
-    border:1px solid var(--line);
-    border-radius:18px;
-    padding:22px;
-    margin-bottom:16px;
-    box-shadow:0 10px 30px #39245b0b;
-}
-.grid {
-    display:grid;
-    grid-template-columns:1.5fr .8fr;
-    gap:16px;
-}
-.row {
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-}
-.btn {
-    display:inline-block;
-    border:0;
-    border-radius:10px;
-    padding:10px 15px;
-    background:var(--p);
-    color:white;
-    text-decoration:none;
-    font-weight:700;
-    cursor:pointer;
-}
-.btn.alt {
-    background:var(--soft);
-    color:var(--p);
-}
-.field {
-    width:100%;
-    padding:12px;
-    border:1px solid var(--line);
-    border-radius:10px;
-    margin:7px 0 12px;
-    outline-color:#a998ed;
-}
-textarea.field {
-    min-height:110px;
-    resize:vertical;
-}
-.notice {
-    padding:12px;
-    background:#fff8e9;
-    border:1px solid #f3e5c6;
-    color:#85652a;
-    border-radius:10px;
-    font-size:13px;
-    margin:12px 0;
-}
-.post {
-    padding:16px 0;
-    border-bottom:1px solid var(--line);
-}
-.post p {
-    white-space:pre-wrap;
-    overflow-wrap:anywhere;
-}
-.meta {
-    font-size:12px;
-    color:var(--muted);
-}
-.empty {
-    text-align:center;
-    padding:25px;
-    color:var(--muted);
-}
-.chatbox {
-    height:360px;
-    overflow:auto;
-    background:#faf9fc;
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:12px;
-    margin:12px 0;
-}
-.bubble {
-    padding:9px 12px;
-    margin:8px 0;
-    background:white;
-    border:1px solid var(--line);
-    border-radius:12px;
-    overflow-wrap:anywhere;
-}
-.bubble.mine {
-    margin-left:auto;
-    background:var(--soft);
-    max-width:85%;
-}
-.bubble small {
-    display:block;
-    color:var(--muted);
-    font-size:11px;
-}
-.pill {
-    font-size:11px;
-    color:var(--p);
-    background:var(--soft);
-    padding:3px 8px;
-    border-radius:20px;
-}
-.role-icon {
-    display:inline-flex;
-    align-items:center;
-    vertical-align:-3px;
-    margin-left:4px;
-}
-.role-icon img {
-    width:26px;
-    height:26px;
-    object-fit:contain;
-}
-.footer {
-    text-align:center;
-    color:var(--muted);
-    font-size:12px;
-    padding:20px;
-}
-@media(max-width:700px) {
-    .grid {
-        grid-template-columns:1fr;
-    }
-    .card {
-        padding:17px;
-    }
-    .nav {
-        gap:2px;
-    }
-    .nav a {
-        padding:8px 10px;
-        font-size:13px;
-    }
-}
-
-.profile-preview{display:flex;align-items:center;gap:14px;padding:18px;background:#f8f6fc;border-radius:16px;margin:12px 0 20px}
-.profile-preview-avatar{width:64px;height:64px;display:grid;place-items:center;border-radius:50%;background:#e6defb;font-size:32px;flex:0 0 64px}
-.avatar-options{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 18px}
-.avatar-option{width:43px;height:43px;border:2px solid transparent;border-radius:50%;background:#f2eefb;font-size:23px;cursor:pointer}
-.avatar-option.selected{border-color:#7862cf;background:#e7e0fb}
-.field-label{display:block;font-size:13px;font-weight:700;margin-top:12px}
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>마이페이지 · COMMU</title>
+<style>
+:root{--bg:#f7f5fb;--ink:#29243b;--muted:#827d91;--line:#ece8f2;--primary:#7862cf;--soft:#f0ecfb}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,'Malgun Gothic',sans-serif}
+button,input{font:inherit}
+header{padding:22px 18px;background:linear-gradient(115deg,#7560c9,#b18bda 60%,#e8a8c8);color:#fff}
+.top,main{max-width:900px;margin:auto}
+.brand{color:#fff;text-decoration:none;font-size:26px;font-weight:850;letter-spacing:2px}
+.tag{margin:2px 0 0;font-size:13px}
+.nav{display:flex;gap:6px;overflow:auto;margin-top:16px}
+.nav a{padding:8px 12px;border-radius:10px;color:#fff;text-decoration:none;white-space:nowrap}
+.nav a.active,.nav a:hover{background:#fff;color:var(--primary)}
+main{padding:28px 16px 50px}
+.eyebrow{color:var(--primary);font-size:12px;font-weight:800;letter-spacing:1.4px}
+h1{margin:6px 0;font-size:clamp(27px,4vw,36px)}
+.muted{color:var(--muted);font-size:13px}
+.card{padding:24px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 30px #39245b0b}
+.card h2{margin:0 0 5px;font-size:21px}
+.preview{display:flex;align-items:center;gap:14px;margin:20px 0;padding:18px;border-radius:16px;background:#f8f6fc}
+.preview-avatar{display:grid;place-items:center;flex:0 0 64px;width:64px;height:64px;border-radius:50%;background:#e6defb;font-size:32px}
+.preview-name{font-weight:800}
+.preview-bio{color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+.field-label{display:block;margin:15px 0 6px;font-size:13px;font-weight:750}
+.field{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;outline-color:#a998ed}
+.avatars{display:flex;flex-wrap:wrap;gap:9px;margin:8px 0 18px}
+.avatar-option{width:45px;height:45px;border:2px solid transparent;border-radius:50%;background:#f2eefb;font-size:23px;cursor:pointer}
+.avatar-option.selected{border-color:var(--primary);background:#e7e0fb}
+.btn{margin-top:18px;padding:11px 18px;border:0;border-radius:10px;background:var(--primary);color:#fff;font-weight:750;cursor:pointer}
+.btn:disabled{opacity:.55;cursor:wait}
+#status{min-height:22px;margin:12px 0 0}
+.note{margin-top:18px;padding:13px;border-radius:10px;background:#f8f6fc;color:var(--muted);font-size:12px}
+.footer{text-align:center;padding:22px;color:var(--muted);font-size:12px}
+.footer a{color:var(--primary)}
+@media(max-width:600px){header{padding:18px 14px}.nav{gap:2px}.nav a{padding:8px 9px;font-size:13px}main{padding:22px 12px 40px}.card{padding:18px}}
 </style>
-    </head>
-    <body>
-        <header>
-            <div class="top">
-                <a class="brand" href="index.html"> COMMU</a><p class="tag"> 관심사를 나누고, 함께 만드는 우리들의 공간</p>
-                <nav class="nav">
-                    <a href="index.html"> 홈</a><a href="board.html" > 게시판</a><a href="chat.html" > 채팅</a><a href="mypage.html" class="active"> 마이페이지</a><a href="manage.html" > 관리진</a>
-                </nav>
-            </div>
-        </header>
-        <main>
-            <div class="page-head">
-                <div class="eyebrow">
-                    MY PAGE
-                </div>
-                <h1> 마이페이지</h1><p class="muted"> COMMU 안의 독립된 마이페이지 페이지입니다.</p>
-            </div>
-            <section class="card">
-                <h2>내 프로필 설정</h2>
-                <p class="muted">채팅방에서 다른 회원에게 보여지는 프로필이에요.</p>
-                <div class="profile-preview"><div class="profile-preview-avatar" id="previewAvatar">🐰</div><div><strong id="previewNickname">새로운 회원</strong><div class="muted" id="previewBio">상태 메시지를 입력해 주세요.</div></div></div>
-                <label class="field-label">프로필 아바타</label>
-                <div class="avatar-options" id="avatarOptions" aria-label="아바타 선택">
-                  <button class="avatar-option" type="button" data-avatar="🐰">🐰</button><button class="avatar-option" type="button" data-avatar="🐻">🐻</button><button class="avatar-option" type="button" data-avatar="🐱">🐱</button><button class="avatar-option" type="button" data-avatar="🐶">🐶</button><button class="avatar-option" type="button" data-avatar="🐼">🐼</button><button class="avatar-option" type="button" data-avatar="🦊">🦊</button><button class="avatar-option" type="button" data-avatar="🐣">🐣</button><button class="avatar-option" type="button" data-avatar="🌷">🌷</button>
-                </div>
-                <label class="field-label" for="nickname">닉네임</label><input class="field" id="nickname" maxlength="16" placeholder="닉네임을 입력해 주세요">
-                <label class="field-label" for="bio">상태 메시지</label><input class="field" id="bio" maxlength="40" placeholder="나를 소개하는 한마디를 적어보세요">
-                <button class="btn" id="saveProfile" type="button">프로필 저장</button>
-                <p id="status" class="muted" role="status"></p>
-            </section>
-            <aside class="card"><h3>프로필 미리보기</h3><p class="muted">저장한 아바타와 닉네임, 상태 메시지가 채팅 말풍선 위에 표시돼요.</p><span class="pill">COMMU PROFILE</span></aside>
-            <div class="footer">
-                <a class="btn alt" href="index.html"> ← 홈으로 돌아가기</a><p> COMMU · 함께 만드는 커뮤니티</p>
-            </div>
-        </main>
-        <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const firebaseConfig = {
-  apiKey: "AIzaSyCad2Z3vp6TCsdIynlR-8WeWTH5FTAu06E",
-  authDomain: "commu-chat-4c35f.firebaseapp.com",
-  projectId: "commu-chat-4c35f",
-  storageBucket: "commu-chat-4c35f.firebasestorage.app",
-  messagingSenderId: "371606149626",
-  appId: "1:371606149626:web:47fdda1440716e54e56c43",
-  measurementId: "G-D71CX7RW30"
+</head>
+<body>
+<header><div class="top">
+<a class="brand" href="index.html">COMMU</a>
+<p class="tag">관심사를 나누고, 함께 만드는 우리들의 공간</p>
+<nav class="nav" aria-label="주요 메뉴">
+<a href="index.html">홈</a><a href="board.html">게시판</a><a href="chat.html">채팅</a><a class="active" href="mypage.html" aria-current="page">마이페이지</a><a href="manage.html">관리진</a>
+</nav></div></header>
+<main>
+<div class="page-head"><div class="eyebrow">MY PAGE</div><h1>마이페이지</h1><p class="muted">나를 표현하는 프로필을 설정해 보세요.</p></div>
+<section class="card">
+<h2>내 프로필 설정</h2>
+<p class="muted">저장한 프로필은 채팅방에서 다른 회원에게 보여요.</p>
+<div class="preview"><div class="preview-avatar" id="previewAvatar">🐰</div><div><div class="preview-name" id="previewNickname">새로운 회원</div><div class="preview-bio" id="previewBio">상태 메시지를 입력해 주세요.</div></div></div>
+<label class="field-label">프로필 아바타</label>
+<div class="avatars" id="avatarOptions" aria-label="아바타 선택">
+<button class="avatar-option selected" type="button" data-avatar="🐰" aria-label="토끼">🐰</button>
+<button class="avatar-option" type="button" data-avatar="🐻" aria-label="곰">🐻</button>
+<button class="avatar-option" type="button" data-avatar="🐱" aria-label="고양이">🐱</button>
+<button class="avatar-option" type="button" data-avatar="🐶" aria-label="강아지">🐶</button>
+<button class="avatar-option" type="button" data-avatar="🐼" aria-label="판다">🐼</button>
+<button class="avatar-option" type="button" data-avatar="🦊" aria-label="여우">🦊</button>
+<button class="avatar-option" type="button" data-avatar="🐣" aria-label="병아리">🐣</button>
+<button class="avatar-option" type="button" data-avatar="🌷" aria-label="튤립">🌷</button>
+<button class="avatar-option" type="button" data-avatar="⭐" aria-label="별">⭐</button>
+<button class="avatar-option" type="button" data-avatar="🍀" aria-label="네잎클로버">🍀</button>
+</div>
+<label class="field-label" for="nickname">닉네임 (2~16자)</label>
+<input class="field" id="nickname" maxlength="16" autocomplete="nickname" placeholder="닉네임을 입력해 주세요">
+<label class="field-label" for="bio">상태 메시지 (최대 40자)</label>
+<input class="field" id="bio" maxlength="40" placeholder="나를 소개하는 한마디를 적어보세요">
+<button class="btn" id="saveProfile" type="button">프로필 저장</button>
+<p id="status" class="muted" role="status" aria-live="polite"></p>
+<div class="note">프로필은 Firebase 계정에 연결되어 저장돼요. 같은 브라우저의 같은 익명 로그인으로 접속하면 채팅방에서도 동일하게 표시됩니다.</div>
+</section>
+<div class="footer"><a href="index.html">← 홈으로 돌아가기</a><p>COMMU · 함께 만드는 커뮤니티</p></div>
+</main>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,signInAnonymously} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig={
+ apiKey:"AIzaSyCad2Z3vp6TCsdIynl-8WeWTH5FTAu06E",
+ authDomain:"commu-chat-4c35f.firebaseapp.com",
+ projectId:"commu-chat-4c35f",
+ storageBucket:"commu-chat-4c35f.firebasestorage.app",
+ messagingSenderId:"371606149626",
+ appId:"1:371606149626:web:47fdda1440716e54e56c43",
+ measurementId:"G-D71CX7RW30"
 };
-const app = initializeApp(firebaseConfig), auth = getAuth(app), db = getFirestore(app);
-const $ = selector => document.querySelector(selector);
-let selectedAvatar = "🐰";
-function preview() {
-  $("#previewAvatar").textContent = selectedAvatar;
-  $("#previewNickname").textContent = $("#nickname").value.trim() || "새로운 회원";
-  $("#previewBio").textContent = $("#bio").value.trim() || "상태 메시지를 입력해 주세요.";
-  document.querySelectorAll(".avatar-option").forEach(button => button.classList.toggle("selected", button.dataset.avatar === selectedAvatar));
-}
-document.querySelectorAll(".avatar-option").forEach(button => button.addEventListener("click", () => { selectedAvatar = button.dataset.avatar; preview(); }));
-$("#nickname").addEventListener("input", preview);
-$("#bio").addEventListener("input", preview);
-async function loadProfile() {
-  try {
-    await signInAnonymously(auth);
-    const saved = (await getDoc(doc(db, "profiles", auth.currentUser.uid))).data() || {};
-    $("#nickname").value = saved.nickname || "새로운 회원";
-    $("#bio").value = saved.bio || "";
-    selectedAvatar = saved.avatar || "🐰";
-    preview();
-  } catch (error) {
-    console.error("프로필 불러오기 오류:", error);
-    $("#status").textContent = "프로필을 불러오지 못했어요. Firebase 보안 규칙을 확인해 주세요.";
-  }
-}
-$("#saveProfile").addEventListener("click", async () => {
-  const nickname = $("#nickname").value.trim(), bio = $("#bio").value.trim();
-  if (nickname.length < 2 || nickname.length > 16) { $("#status").textContent = "닉네임은 2~16자로 입력해 주세요."; return; }
-  const nextProfile = { nickname, avatar: selectedAvatar, bio: bio.slice(0, 40) };
-  const button = $("#saveProfile"); button.disabled = true;
-  try {
-    if (!auth.currentUser) await signInAnonymously(auth);
-    await setDoc(doc(db, "profiles", auth.currentUser.uid), nextProfile);
-    localStorage.setItem("commu_demo_profile", JSON.stringify(nextProfile));
-    $("#status").textContent = "프로필을 저장했어요. 채팅방에도 반영됩니다.";
-    preview();
-  } catch (error) {
-    console.error("프로필 저장 오류:", error);
-    $("#status").textContent = "저장에 실패했어요. Firestore 프로필 보안 규칙을 확인해 주세요.";
-  } finally { button.disabled = false; }
-});
-loadProfile();
-</script><html lang="ko">
-    <head>
-        <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title> 마이페이지 · COMMU</title>
-        <style>
-:root {
-    --bg:#f7f5fb;
-    --ink:#29243b;
-    --muted:#827d91;
-    --line:#ece8f2;
-    --p:#7862cf;
-    --soft:#f0ecfb;
-}
-* {
-    box-sizing:border-box;
-}
-body {
-    margin:0;
-    background:var(--bg);
-    color:var(--ink);
-    font:15px system-ui,'Malgun Gothic',sans-serif;
-    line-height:1.65;
-}
-button,input,textarea {
-    font:inherit;
-}
-a {
-    color:inherit;
-}
-header {
-    background:linear-gradient(115deg,#7560c9,#b18bda 60%,#e8a8c8);
-    color:white;
-    padding:22px 18px;
-}
-.top {
-    max-width:1000px;
-    margin:auto;
-}
-.brand {
-    font-size:26px;
-    font-weight:850;
-    letter-spacing:2px;
-    text-decoration:none;
-}
-.tag {
-    font-size:13px;
-    margin:2px 0 0;
-}
-.nav {
-    display:flex;
-    gap:6px;
-    overflow:auto;
-    margin-top:16px;
-}
-.nav a {
-    display:block;
-    text-decoration:none;
-    color:white;
-    padding:9px 13px;
-    border-radius:10px;
-    white-space:nowrap;
-}
-.nav a.active,.nav a:hover {
-    background:#fff;
-    color:var(--p);
-}
-main {
-    max-width:1000px;
-    margin:28px auto;
-    padding:0 16px 55px;
-}
-.eyebrow {
-    font-size:12px;
-    color:var(--p);
-    font-weight:800;
-    letter-spacing:1.4px;
-}
-.page-head {
-    margin-bottom:18px;
-}
-.page-head h1 {
-    font-size:clamp(27px,4vw,36px);
-    line-height:1.25;
-    margin:6px 0;
-}
-.muted {
-    font-size:13px;
-    color:var(--muted);
-}
-.card {
-    background:white;
-    border:1px solid var(--line);
-    border-radius:18px;
-    padding:22px;
-    margin-bottom:16px;
-    box-shadow:0 10px 30px #39245b0b;
-}
-.grid {
-    display:grid;
-    grid-template-columns:1.5fr .8fr;
-    gap:16px;
-}
-.row {
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-}
-.btn {
-    display:inline-block;
-    border:0;
-    border-radius:10px;
-    padding:10px 15px;
-    background:var(--p);
-    color:white;
-    text-decoration:none;
-    font-weight:700;
-    cursor:pointer;
-}
-.btn.alt {
-    background:var(--soft);
-    color:var(--p);
-}
-.field {
-    width:100%;
-    padding:12px;
-    border:1px solid var(--line);
-    border-radius:10px;
-    margin:7px 0 12px;
-    outline-color:#a998ed;
-}
-textarea.field {
-    min-height:110px;
-    resize:vertical;
-}
-.notice {
-    padding:12px;
-    background:#fff8e9;
-    border:1px solid #f3e5c6;
-    color:#85652a;
-    border-radius:10px;
-    font-size:13px;
-    margin:12px 0;
-}
-.post {
-    padding:16px 0;
-    border-bottom:1px solid var(--line);
-}
-.post p {
-    white-space:pre-wrap;
-    overflow-wrap:anywhere;
-}
-.meta {
-    font-size:12px;
-    color:var(--muted);
-}
-.empty {
-    text-align:center;
-    padding:25px;
-    color:var(--muted);
-}
-.chatbox {
-    height:360px;
-    overflow:auto;
-    background:#faf9fc;
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:12px;
-    margin:12px 0;
-}
-.bubble {
-    padding:9px 12px;
-    margin:8px 0;
-    background:white;
-    border:1px solid var(--line);
-    border-radius:12px;
-    overflow-wrap:anywhere;
-}
-.bubble.mine {
-    margin-left:auto;
-    background:var(--soft);
-    max-width:85%;
-}
-.bubble small {
-    display:block;
-    color:var(--muted);
-    font-size:11px;
-}
-.pill {
-    font-size:11px;
-    color:var(--p);
-    background:var(--soft);
-    padding:3px 8px;
-    border-radius:20px;
-}
-.role-icon {
-    display:inline-flex;
-    align-items:center;
-    vertical-align:-3px;
-    margin-left:4px;
-}
-.role-icon img {
-    width:26px;
-    height:26px;
-    object-fit:contain;
-}
-.footer {
-    text-align:center;
-    color:var(--muted);
-    font-size:12px;
-    padding:20px;
-}
-@media(max-width:700px) {
-    .grid {
-        grid-template-columns:1fr;
-    }
-    .card {
-        padding:17px;
-    }
-    .nav {
-        gap:2px;
-    }
-    .nav a {
-        padding:8px 10px;
-        font-size:13px;
-    }
-}
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+const $=selector=>document.querySelector(selector);
+let selectedAvatar="🐰";
 
-.profile-preview{display:flex;align-items:center;gap:14px;padding:18px;background:#f8f6fc;border-radius:16px;margin:12px 0 20px}
-.profile-preview-avatar{width:64px;height:64px;display:grid;place-items:center;border-radius:50%;background:#e6defb;font-size:32px;flex:0 0 64px}
-.avatar-options{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 18px}
-.avatar-option{width:43px;height:43px;border:2px solid transparent;border-radius:50%;background:#f2eefb;font-size:23px;cursor:pointer}
-.avatar-option.selected{border-color:#7862cf;background:#e7e0fb}
-.field-label{display:block;font-size:13px;font-weight:700;margin-top:12px}
-</style>
-    </head>
-    <body>
-        <header>
-            <div class="top">
-                <a class="brand" href="index.html"> COMMU</a><p class="tag"> 관심사를 나누고, 함께 만드는 우리들의 공간</p>
-                <nav class="nav">
-                    <a href="index.html"> 홈</a><a href="board.html" > 게시판</a><a href="chat.html" > 채팅</a><a href="mypage.html" class="active"> 마이페이지</a><a href="manage.html" > 관리진</a>
-                </nav>
-            </div>
-        </header>
-        <main>
-            <div class="page-head">
-                <div class="eyebrow">
-                    MY PAGE
-                </div>
-                <h1> 마이페이지</h1><p class="muted"> COMMU 안의 독립된 마이페이지 페이지입니다.</p>
-            </div>
-            <section class="card">
-                <h2>내 프로필 설정</h2>
-                <p class="muted">채팅방에서 다른 회원에게 보여지는 프로필이에요.</p>
-                <div class="profile-preview"><div class="profile-preview-avatar" id="previewAvatar">🐰</div><div><strong id="previewNickname">새로운 회원</strong><div class="muted" id="previewBio">상태 메시지를 입력해 주세요.</div></div></div>
-                <label class="field-label">프로필 아바타</label>
-                <div class="avatar-options" id="avatarOptions" aria-label="아바타 선택">
-                  <button class="avatar-option" type="button" data-avatar="🐰">🐰</button><button class="avatar-option" type="button" data-avatar="🐻">🐻</button><button class="avatar-option" type="button" data-avatar="🐱">🐱</button><button class="avatar-option" type="button" data-avatar="🐶">🐶</button><button class="avatar-option" type="button" data-avatar="🐼">🐼</button><button class="avatar-option" type="button" data-avatar="🦊">🦊</button><button class="avatar-option" type="button" data-avatar="🐣">🐣</button><button class="avatar-option" type="button" data-avatar="🌷">🌷</button>
-                </div>
-                <label class="field-label" for="nickname">닉네임</label><input class="field" id="nickname" maxlength="16" placeholder="닉네임을 입력해 주세요">
-                <label class="field-label" for="bio">상태 메시지</label><input class="field" id="bio" maxlength="40" placeholder="나를 소개하는 한마디를 적어보세요">
-                <button class="btn" id="saveProfile" type="button">프로필 저장</button>
-                <p id="status" class="muted" role="status"></p>
-            </section>
-            <aside class="card"><h3>프로필 미리보기</h3><p class="muted">저장한 아바타와 닉네임, 상태 메시지가 채팅 말풍선 위에 표시돼요.</p><span class="pill">COMMU PROFILE</span></aside>
-            <div class="footer">
-                <a class="btn alt" href="index.html"> ← 홈으로 돌아가기</a><p> COMMU · 함께 만드는 커뮤니티</p>
-            </div>
-        </main>
-        <script>
-const $=s=>document.querySelector(s),get=(k,d)=> {
-try {
-    return JSON.parse(localStorage.getItem(k))??d
-    }
-    catch {
-    return d
-    }
-},set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
-let profile=get('commu_demo_profile', {
-nickname:'새로운 회원'
-});
-let visitorId=localStorage.getItem('commu_demo_visitor_id');
-if(!visitorId) {
-visitorId='visitor_'+Date.now().toString(36);
-    localStorage.setItem('commu_demo_visitor_id',visitorId)
+function updatePreview(){
+ $("#previewAvatar").textContent=selectedAvatar;
+ $("#previewNickname").textContent=$("#nickname").value.trim()||"새로운 회원";
+ $("#previewBio").textContent=$("#bio").value.trim()||"상태 메시지를 입력해 주세요.";
+ document.querySelectorAll(".avatar-option").forEach(button=>{
+  const selected=button.dataset.avatar===selectedAvatar;
+  button.classList.toggle("selected",selected);
+  button.setAttribute("aria-pressed",String(selected));
+ });
 }
-function safe(s) {
-return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))};$('#nickname').value=profile.nickname;$('#saveNick').onclick=()=>{let n=$('#nickname').value.trim();if(n.length<2||n.length>16){$('#status').textContent='닉네임은 2~16자로 입력해 주세요.';return}profile.nickname=n;set('commu_demo_profile',profile);$('#status').textContent='닉네임을 변경했어요.'};
+document.querySelectorAll(".avatar-option").forEach(button=>{
+ button.addEventListener("click",()=>{
+  selectedAvatar=button.dataset.avatar;
+  updatePreview();
+ });
+});
+$("#nickname").addEventListener("input",updatePreview);
+$("#bio").addEventListener("input",updatePreview);
+
+async function loadProfile(){
+ try{
+  $("#status").textContent="프로필을 불러오고 있어요...";
+  await signInAnonymously(auth);
+  const profileRef=doc(db,"profiles",auth.currentUser.uid);
+  const snapshot=await getDoc(profileRef);
+  const saved=snapshot.exists()?snapshot.data():{};
+  $("#nickname").value=saved.nickname||"새로운 회원";
+  $("#bio").value=saved.bio||"";
+  selectedAvatar=saved.avatar||"🐰";
+  updatePreview();
+  $("#status").textContent="프로필을 불러왔어요.";
+ }catch(error){
+  console.error("프로필 불러오기 오류:",error);
+  $("#status").textContent="프로필을 불러오지 못했어요. Firebase 로그인과 profiles 보안 규칙을 확인해 주세요.";
+ }
+}
+$("#saveProfile").addEventListener("click",async()=>{
+ const nickname=$("#nickname").value.trim();
+ const bio=$("#bio").value.trim();
+ if(nickname.length<2||nickname.length>16){
+  $("#status").textContent="닉네임은 2~16자로 입력해 주세요.";
+  $("#nickname").focus();
+  return;
+ }
+ const button=$("#saveProfile");
+ button.disabled=true;
+ try{
+  if(!auth.currentUser)await signInAnonymously(auth);
+  const profile={nickname,avatar:selectedAvatar,bio:bio.slice(0,40)};
+  await setDoc(doc(db,"profiles",auth.currentUser.uid),profile);
+  localStorage.setItem("commu_demo_profile",JSON.stringify(profile));
+  $("#status").textContent="프로필을 저장했어요. 채팅방에도 반영됩니다.";
+  updatePreview();
+ }catch(error){
+  console.error("프로필 저장 오류:",error);
+  $("#status").textContent="저장하지 못했어요. Firestore profiles 보안 규칙을 확인해 주세요.";
+ }finally{
+  button.disabled=false;
+ }
+});
+updatePreview();
+loadProfile();
 </script>
-    </body>
+</body>
 </html>
