@@ -276,15 +276,17 @@ textarea.field {
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getAuth,signInAnonymously} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth,signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {getFirestore,collection,onSnapshot} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyCad2Z3vp6TCsdIynlR-8WeWTH5FTAu06E",authDomain:"commu-chat-4c35f.firebaseapp.com",projectId:"commu-chat-4c35f",storageBucket:"commu-chat-4c35f.firebasestorage.app",messagingSenderId:"371606149626",appId:"1:371606149626:web:47fdda1440716e54e56c43",measurementId:"G-D71CX7RW30"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+const authReady=new Promise(resolve=>{const stop=onAuthStateChanged(auth,user=>{stop();resolve(user);});});
+async function ensureUser(){await authReady;if(!auth.currentUser)await signInAnonymously(auth);return auth.currentUser;}
 const list=document.querySelector("#memberList"),count=document.querySelector("#memberCount"),status=document.querySelector("#memberStatus");
 function safe(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]))}
 async function start(){
  try{
-  if(!auth.currentUser) await signInAnonymously(auth);
+  await ensureUser();
   onSnapshot(collection(db,"profiles"),snapshot=>{
    const members=snapshot.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.nickname||"").localeCompare(String(b.nickname||""),"ko"));
    count.textContent=members.length+"명";
